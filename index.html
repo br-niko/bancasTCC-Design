@@ -121,13 +121,7 @@
       gap: 14px;
     }
 
-    .header-bottom-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
+
 
     .brand {
       display: flex;
@@ -245,57 +239,21 @@
     }
 
     /* Segmented Week Switcher */
-    .segmented {
-      display: inline-flex;
-      flex-wrap: wrap;
-      padding: 4px;
-      border-radius: 15px;
-      background: rgba(226, 237, 252, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: inset 0 1px 2px rgba(25, 55, 100, 0.06);
-      gap: 4px;
-    }
-
-    .seg-btn {
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 8px 13px;
-      border-radius: 11px;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-      display: inline-flex;
+    .search-bar-panel {
+      padding: 14px 20px;
+      display: flex;
       align-items: center;
-      gap: 7px;
-      white-space: nowrap;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .seg-btn:hover {
-      color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.45);
-    }
-
-    .seg-btn.active {
-      background: rgba(255, 255, 255, 0.94);
-      color: var(--text-primary);
-      box-shadow: 0 4px 12px -2px rgba(30, 68, 120, 0.14), inset 0 1px 0 #fff;
-    }
-
-    .seg-count {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 1px 7px;
-      border-radius: var(--radius-pill);
-      background: rgba(47, 128, 237, 0.12);
-      color: var(--accent-blue);
-    }
-
-    .seg-btn.active .seg-count {
-      background: var(--accent-blue);
-      color: #fff;
+    .search-inputs-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 1;
     }
 
     /* Mini Monthly Calendar Card */
@@ -618,77 +576,7 @@
       color: var(--text-primary);
     }
 
-    .pills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-
-    .prof-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 6px 10px 6px 11px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-      background: rgba(255, 255, 255, 0.62);
-      box-shadow: 0 2px 8px -2px rgba(25, 55, 100, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-      color: var(--text-primary);
-      font-family: inherit;
-      font-size: 12.5px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-      user-select: none;
-    }
-
-    .prof-pill:hover {
-      background: rgba(255, 255, 255, 0.92);
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px -6px rgba(30, 75, 140, 0.16), inset 0 1px 0 #fff;
-    }
-
-    .prof-pill.active {
-      background: var(--pill-active-bg, linear-gradient(145deg, rgba(64, 152, 255, 0.92), rgba(47, 128, 237, 0.86)));
-      color: #fff;
-      border-color: rgba(255, 255, 255, 0.78);
-      font-weight: 600;
-      transform: translateY(-1px);
-      box-shadow: 0 10px 22px -6px var(--pill-active-shadow, rgba(47, 128, 237, 0.45)), inset 0 1px 1px rgba(255, 255, 255, 0.65);
-    }
-
-    .pill-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      background: var(--dot-color, #2f80ed);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.85);
-    }
-
-    .prof-pill.active .pill-dot {
-      background: #fff;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
-    }
-
-    .pill-count {
-      font-size: 11px;
-      font-weight: 700;
-      min-width: 21px;
-      height: 19px;
-      padding: 0 6px;
-      border-radius: var(--radius-pill);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(20, 34, 56, 0.07);
-      color: var(--text-secondary);
-    }
-
-    .prof-pill.active .pill-count {
-      background: rgba(255, 255, 255, 0.28);
-      color: #fff;
-    }
+    
 
     /* Main Weekly Calendar Glass Container */
     .calendar-panel {
@@ -1523,10 +1411,6 @@
             <button type="button" class="reset-source-btn" id="resetSourceBtn" style="display: none;">Restaurar original</button>
           </div>
         </div>
-
-        <div class="header-bottom-row">
-          <div class="segmented" id="weekSwitcher" role="tablist" aria-label="Selecionar semana"></div>
-        </div>
       </header>
 
       <aside class="glass-panel mini-cal-card" aria-label="Mini calendário">
@@ -1538,45 +1422,38 @@
       </aside>
     </section>
 
-    <!-- Professor Pills Filter -->
-    <section class="glass-panel pills-panel" aria-label="Filtrar por professor ou professora">
-      <div class="pills-toolbar">
-        <div class="pills-title-wrap">
-          <span class="pills-title">Professores</span>
-          <div id="activeFilterBanner" class="active-filter-banner" style="display: none;">
-            <span id="activeFilterName"></span>
-            <button class="clear-filter-btn" id="clearFilterBtn" title="Limpar filtro" aria-label="Limpar filtro">×</button>
-          </div>
+    <!-- Search Toolbar: Professor e Estudante -->
+    <section class="glass-panel search-bar-panel" aria-label="Busca de bancas">
+      <div class="search-inputs-group">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="search-input" id="profSearchInput" placeholder="Buscar professor..." />
+          <button type="button" class="clear-inline-btn" id="clearProfSearchBtn" aria-label="Limpar busca de professor">×</button>
         </div>
 
-        <div class="pills-actions">
-          <div class="search-box">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" class="search-input" id="profSearchInput" placeholder="Buscar professor..." />
-          </div>
+        <div class="student-search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" class="student-search-input" id="studentSearchInput" placeholder="Buscar estudante..." />
+          <button type="button" class="clear-inline-btn" id="clearStudentSearchBtn" aria-label="Limpar busca de estudante">×</button>
+        </div>
+
+        <div id="activeFilterBanner" class="active-filter-banner" style="display: none;">
+          <span id="activeFilterName"></span>
+          <button class="clear-filter-btn" id="clearFilterBtn" title="Limpar filtro de professor" aria-label="Limpar filtro">×</button>
         </div>
       </div>
-
-      <div class="pills-grid" id="pillsGrid"></div>
     </section>
 
     <!-- Weekly Calendar Grid -->
     <section class="glass-panel calendar-panel" aria-label="Calendário semanal de bancas">
       <div class="calendar-nav-bar">
-        <div class="calendar-nav-left">
-          <div class="calendar-range-label" id="calendarRangeLabel"></div>
-          <div class="student-search-wrap">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" class="student-search-input" id="studentSearchInput" placeholder="Buscar estudante..." />
-            <button type="button" class="clear-inline-btn" id="clearStudentSearchBtn" aria-label="Limpar busca de estudante">×</button>
-          </div>
-        </div>
+        <div class="calendar-range-label" id="calendarRangeLabel"></div>
         <div class="scroll-arrows" id="scrollArrows">
           <span class="scroll-hint">Rolar dias</span>
           <button type="button" class="scroll-arrow-btn" id="scrollLeftBtn" aria-label="Rolar para a esquerda" title="Rolar para a esquerda">
@@ -1598,7 +1475,6 @@
 
       <div class="empty-week-banner" id="emptyWeekBanner" style="display: none;">
         <p id="emptyWeekMsg"></p>
-        <button class="btn-glass-primary" id="jumpOtherWeekBtn"></button>
       </div>
     </section>
   </main>
@@ -1691,17 +1567,14 @@
     }
 
     const state = {
-      selectedWeek: getDefaultWeekForSchedule(SCHEDULE_DATA),
       selectedProfessor: null,
-      searchQuery: "",
+      profQuery: "",
       studentQuery: "",
     };
 
     let pendingImportData = null;
 
     // DOM refs
-    const weekSwitcher = document.getElementById("weekSwitcher");
-    const pillsGrid = document.getElementById("pillsGrid");
     const calendarGrid = document.getElementById("calendarGrid");
     const calendarScroll = document.getElementById("calendarScroll");
     const calendarRangeLabel = document.getElementById("calendarRangeLabel");
@@ -1723,8 +1596,12 @@
     const activeFilterName = document.getElementById("activeFilterName");
     const clearFilterBtn = document.getElementById("clearFilterBtn");
     const profSearchInput = document.getElementById("profSearchInput");
+    const clearProfSearchBtn = document.getElementById("clearProfSearchBtn");
     const studentSearchInput = document.getElementById("studentSearchInput");
     const clearStudentSearchBtn = document.getElementById("clearStudentSearchBtn");
+    const emptyWeekBanner = document.getElementById("emptyWeekBanner");
+    const emptyWeekMsg = document.getElementById("emptyWeekMsg");
+
     const importModalBackdrop = document.getElementById("importModalBackdrop");
     const importModalTitle = document.getElementById("importModalTitle");
     const importSummaryText = document.getElementById("importSummaryText");
@@ -1733,9 +1610,6 @@
     const importCloseBtn = document.getElementById("importCloseBtn");
     const importCancelBtn = document.getElementById("importCancelBtn");
     const importConfirmBtn = document.getElementById("importConfirmBtn");
-    const emptyWeekBanner = document.getElementById("emptyWeekBanner");
-    const emptyWeekMsg = document.getElementById("emptyWeekMsg");
-    const jumpOtherWeekBtn = document.getElementById("jumpOtherWeekBtn");
 
     const modalBackdrop = document.getElementById("modalBackdrop");
     const modalCloseBtn = document.getElementById("modalCloseBtn");
@@ -2133,11 +2007,11 @@
       SCHEDULE_DATA = finalData;
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(finalData)); } catch (e) {}
       state.selectedProfessor = null;
-      state.selectedWeek = getDefaultWeekForSchedule(finalData);
-      state.searchQuery = "";
+      state.profQuery = "";
       state.studentQuery = "";
       profSearchInput.value = "";
       studentSearchInput.value = "";
+      clearProfSearchBtn.classList.remove("visible");
       clearStudentSearchBtn.classList.remove("visible");
       rebuildColorMap();
       render();
@@ -2169,8 +2043,12 @@
 
     function getFilteredBancas() {
       const sq = normText(state.studentQuery.trim());
+      const pq = normText(state.profQuery.trim());
       return getBaseBancas().filter(b => {
         if (state.selectedProfessor && !b.professors.some(p => p.name === state.selectedProfessor)) {
+          return false;
+        }
+        if (pq && !b.professors.some(p => normText(p.name).includes(pq))) {
           return false;
         }
         if (sq && !normText(b.student).includes(sq)) {
@@ -2197,13 +2075,6 @@
         state.selectedProfessor = null;
       } else {
         state.selectedProfessor = profName;
-        if (state.selectedWeek !== "all") {
-          const matching = getFilteredBancas();
-          const inCurrent = matching.some(b => b.weekNum === state.selectedWeek);
-          if (!inCurrent && matching.length > 0) {
-            state.selectedWeek = matching[0].weekNum;
-          }
-        }
       }
       render();
     }
@@ -2216,14 +2087,22 @@
       }
 
       const all = filteredBancas.length;
-      if (state.selectedProfessor && state.studentQuery.trim()) {
-        summaryText.textContent = `${all} ${all === 1 ? "banca" : "bancas"} encontradas`;
-      } else if (state.selectedProfessor) {
-        summaryText.textContent = `${all} ${all === 1 ? "banca" : "bancas"} de ${state.selectedProfessor}`;
-      } else if (state.studentQuery.trim()) {
-        summaryText.textContent = `${all} ${all === 1 ? "banca" : "bancas"} para "${state.studentQuery.trim()}"`;
+      const terms = [];
+      if (state.selectedProfessor) terms.push(state.selectedProfessor);
+      else if (state.profQuery.trim()) terms.push(`prof. "${state.profQuery.trim()}"`);
+      if (state.studentQuery.trim()) terms.push(`estudante "${state.studentQuery.trim()}"`);
+
+      if (terms.length) {
+        summaryText.textContent = `${all} ${all === 1 ? "banca" : "bancas"} (${terms.join(" · ")})`;
       } else {
         summaryText.textContent = `${all} ${all === 1 ? "banca" : "bancas"} no total`;
+      }
+
+      if (state.selectedProfessor) {
+        activeFilterBanner.style.display = "inline-flex";
+        activeFilterName.textContent = state.selectedProfessor;
+      } else {
+        activeFilterBanner.style.display = "none";
       }
 
 
@@ -2237,61 +2116,18 @@
       }
     }
 
-    function renderWeekTabs(filteredBancas) {
-      const weekNums = Array.from(new Set(SCHEDULE_DATA.days.map(d => d.weekNum))).sort((a, b) => a - b);
-      let html = "";
-      for (const wn of weekNums) {
-        const wDays = SCHEDULE_DATA.days.filter(d => d.weekNum === wn);
-        const f = wDays[0];
-        const l = wDays[wDays.length - 1];
-        const rangeStr = f.date === l.date
-          ? `${String(f.dayNum).padStart(2, "0")} ${f.monthLabel}`
-          : `${String(f.dayNum).padStart(2, "0")} ${f.monthLabel}–${String(l.dayNum).padStart(2, "0")} ${l.monthLabel}`;
-        const cnt = filteredBancas.filter(b => b.weekNum === wn).length;
-        const activeCls = state.selectedWeek === wn ? "active" : "";
-        html += `
-          <button class="seg-btn ${activeCls}" data-week="${wn}">
-            <span>Semana ${wn} · ${rangeStr}</span>
-            <span class="seg-count">${cnt}</span>
-          </button>
-        `;
-      }
-      if (weekNums.length > 1) {
-        const activeAll = state.selectedWeek === "all" ? "active" : "";
-        html += `
-          <button class="seg-btn ${activeAll}" data-week="all">
-            <span>Todos os ${SCHEDULE_DATA.days.length} dias</span>
-            <span class="seg-count">${filteredBancas.length}</span>
-          </button>
-        `;
-      }
 
-      weekSwitcher.innerHTML = html;
-      weekSwitcher.querySelectorAll(".seg-btn").forEach(btn => {
-        btn.addEventListener("click", () => {
-          state.selectedWeek = btn.dataset.week === "all" ? "all" : Number(btn.dataset.week);
-          calendarScroll.scrollLeft = 0;
-          render();
-        });
-      });
-    }
 
     function renderMiniCalendar(filteredBancas) {
       if (!SCHEDULE_DATA.days.length) return;
       const todayIso = getTodayIso();
       const activeDates = new Set(filteredBancas.map(b => b.date));
       const allBancaDates = new Set(getBaseBancas().map(b => b.date));
-      const visibleDates = new Set(
-        SCHEDULE_DATA.days
-          .filter(d => state.selectedWeek === "all" || d.weekNum === state.selectedWeek)
-          .map(d => d.date)
-      );
 
-      // Compute Monday of first day's week through Sunday of last day's week
       const firstParts = SCHEDULE_DATA.days[0].date.split("-").map(Number);
       const lastParts = SCHEDULE_DATA.days[SCHEDULE_DATA.days.length - 1].date.split("-").map(Number);
       const startDt = new Date(Date.UTC(firstParts[0], firstParts[1] - 1, firstParts[2]));
-      const startDow = (startDt.getUTCDay() + 6) % 7; // Mon=0..Sun=6
+      const startDow = (startDt.getUTCDay() + 6) % 7;
       startDt.setUTCDate(startDt.getUTCDate() - startDow);
 
       const endDt = new Date(Date.UTC(lastParts[0], lastParts[1] - 1, lastParts[2]));
@@ -2313,92 +2149,29 @@
 
         const hasAny = allBancaDates.has(iso);
         const hasFiltered = activeDates.has(iso);
-        const inWeek = visibleDates.has(iso);
         const dayObj = SCHEDULE_DATA.days.find(x => x.date === iso);
 
         const classes = ["mini-day"];
         if (hasAny) classes.push("has-banca");
-        if (inWeek && hasAny) classes.push("in-active-week");
+        if (hasAny) classes.push("in-active-week");
         if (iso === todayIso) classes.push("is-today");
         if (hasAny && !hasFiltered) classes.push("empty-for-filter");
 
-        const weekAttr = dayObj ? `data-jump-week="${dayObj.weekNum}"` : "";
-        html += `<button type="button" class="${classes.join(" ")}" ${weekAttr} title="${dayObj ? dayObj.label : ""}">${d}</button>`;
+        html += `<button type="button" class="${classes.join(" ")}" data-date="${iso}" title="${dayObj ? dayObj.label : ""}">${d}</button>`;
       }
 
       miniCalGrid.innerHTML = html;
-      miniCalGrid.querySelectorAll("[data-jump-week]").forEach(el => {
+      miniCalGrid.querySelectorAll("[data-date]").forEach(el => {
         el.addEventListener("click", () => {
-          state.selectedWeek = Number(el.dataset.jumpWeek);
-          calendarScroll.scrollLeft = 0;
-          render();
-        });
-      });
-    }
-
-    function renderPills() {
-      const q = normText(state.searchQuery.trim());
-      const baseBancas = getBaseBancas();
-      const dynamicProfs = getProfessorListFromBase(baseBancas);
-
-      if (state.selectedProfessor && !dynamicProfs.some(p => p.name === state.selectedProfessor)) {
-        state.selectedProfessor = null;
-      }
-
-      if (state.selectedProfessor) {
-        activeFilterBanner.style.display = "inline-flex";
-        activeFilterName.textContent = state.selectedProfessor;
-      } else {
-        activeFilterBanner.style.display = "none";
-      }
-
-      let html = "";
-      if (!q) {
-        const allActive = state.selectedProfessor === null ? "active" : "";
-        html += `
-          <button type="button" class="prof-pill ${allActive}" data-prof="">
-            <span class="pill-dot" style="--dot-color: #2f80ed;"></span>
-            <span>Todas</span>
-            <span class="pill-count">${baseBancas.length}</span>
-          </button>
-        `;
-      }
-
-      const matchingProfs = dynamicProfs.filter(p =>
-        !q || normText(p.name).includes(q)
-      );
-
-      for (const p of matchingProfs) {
-        const col = profColorMap.get(p.name) || PALETTE[0];
-        const isActive = state.selectedProfessor === p.name;
-        const styleVars = `--dot-color: ${col.accent}; --pill-active-bg: ${col.pillGrad}; --pill-active-shadow: ${col.shadow};`;
-        html += `
-          <button type="button" class="prof-pill ${isActive ? "active" : ""}" data-prof="${escapeHtml(p.name)}" style="${styleVars}">
-            <span class="pill-dot"></span>
-            <span>${escapeHtml(p.name)}</span>
-            <span class="pill-count">${p.count}</span>
-          </button>
-        `;
-      }
-
-      if (!matchingProfs.length) {
-        html = `<span style="font-size: 13px; color: var(--text-muted); padding: 6px 4px;">Nenhum professor encontrado para "${escapeHtml(state.searchQuery)}".</span>`;
-      }
-
-      pillsGrid.innerHTML = html;
-
-      pillsGrid.querySelectorAll(".prof-pill").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const name = btn.dataset.prof;
-          if (!name) {
-            state.selectedProfessor = null;
-            render();
-          } else {
-            selectProfessor(name);
+          const targetDay = document.querySelector(`.cal-day-header[data-date="${el.dataset.date}"]`);
+          if (targetDay) {
+            targetDay.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
           }
         });
       });
     }
+
+
 
     function updateScrollArrows() {
       const canScroll = calendarScroll.scrollWidth > calendarScroll.clientWidth + 4;
@@ -2410,15 +2183,12 @@
     }
 
     function renderCalendar(filteredBancas) {
-      const visibleDays = SCHEDULE_DATA.days.filter(d =>
-        state.selectedWeek === "all" || d.weekNum === state.selectedWeek
-      );
+      const visibleDays = SCHEDULE_DATA.days;
 
       if (visibleDays.length) {
         const f = visibleDays[0];
         const l = visibleDays[visibleDays.length - 1];
-        const prefix = state.selectedWeek === "all" ? `Visão geral (${visibleDays.length} dias)` : `Semana ${state.selectedWeek}`;
-        calendarRangeLabel.textContent = `${prefix} · ${String(f.dayNum).padStart(2, "0")} ${f.monthLabel} a ${String(l.dayNum).padStart(2, "0")} ${l.monthLabel}`;
+        calendarRangeLabel.textContent = `Cronograma completo (${visibleDays.length} dias) · ${String(f.dayNum).padStart(2, "0")} ${f.monthLabel} a ${String(l.dayNum).padStart(2, "0")} ${l.monthLabel}`;
       }
 
       calendarGrid.style.setProperty("--day-cols", Math.max(visibleDays.length, 1));
@@ -2440,7 +2210,7 @@
         const cnt = dayCounts.get(d.date) || 0;
         const isToday = d.date === todayIso;
         html += `
-          <div class="cal-day-header ${isToday ? "is-today" : ""}">
+          <div class="cal-day-header ${isToday ? "is-today" : ""}" data-date="${d.date}">
             <div class="day-title-group">
               <span class="day-weekday">${escapeHtml(d.weekday)}</span>
               <span class="day-date">${String(d.dayNum).padStart(2, "0")} ${escapeHtml(d.monthLabel)}</span>
@@ -2517,27 +2287,15 @@
       calendarGrid.innerHTML = html;
 
       const visibleTotal = Array.from(dayCounts.values()).reduce((a, b) => a + b, 0);
-      if ((state.selectedProfessor || state.studentQuery.trim()) && visibleTotal === 0 && state.selectedWeek !== "all") {
-        const otherWeek = state.selectedWeek === 1 ? 2 : 1;
-        const otherCount = filteredBancas.filter(b => b.weekNum === otherWeek).length;
+      if (filteredBancas.length === 0) {
         emptyWeekBanner.style.display = "flex";
-        if (state.studentQuery.trim() && !state.selectedProfessor) {
-          emptyWeekMsg.textContent = `Nenhum estudante encontrado para "${state.studentQuery.trim()}" na Semana ${state.selectedWeek}.`;
-        } else if (state.studentQuery.trim() && state.selectedProfessor) {
-          emptyWeekMsg.textContent = `Nenhuma banca encontrada na Semana ${state.selectedWeek} com os filtros atuais.`;
-        } else {
-          emptyWeekMsg.textContent = `${state.selectedProfessor} não tem bancas na Semana ${state.selectedWeek}.`;
-        }
-        if (otherCount > 0) {
-          jumpOtherWeekBtn.style.display = "inline-flex";
-          jumpOtherWeekBtn.textContent = `Ver ${otherCount} ${otherCount === 1 ? "banca" : "bancas"} na Semana ${otherWeek}`;
-          jumpOtherWeekBtn.onclick = () => {
-            state.selectedWeek = otherWeek;
-            render();
-          };
-        } else {
-          jumpOtherWeekBtn.style.display = "none";
-        }
+        const terms = [];
+        if (state.selectedProfessor) terms.push(state.selectedProfessor);
+        else if (state.profQuery.trim()) terms.push(`prof. "${state.profQuery.trim()}"`);
+        if (state.studentQuery.trim()) terms.push(`estudante "${state.studentQuery.trim()}"`);
+        emptyWeekMsg.textContent = terms.length
+          ? `Nenhuma banca encontrada para ${terms.join(" e ")}.`
+          : "Nenhuma banca cadastrada.";
       } else {
         emptyWeekBanner.style.display = "none";
       }
@@ -2589,9 +2347,7 @@
     function render() {
       const filteredBancas = getFilteredBancas();
       renderHeaderMeta(filteredBancas);
-      renderWeekTabs(filteredBancas);
       renderMiniCalendar(filteredBancas);
-      renderPills();
       renderCalendar(filteredBancas);
     }
 
@@ -2619,7 +2375,12 @@
       try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
       SCHEDULE_DATA = DEFAULT_SCHEDULE_DATA;
       state.selectedProfessor = null;
-      state.selectedWeek = 1;
+      state.profQuery = "";
+      state.studentQuery = "";
+      profSearchInput.value = "";
+      studentSearchInput.value = "";
+      clearProfSearchBtn.classList.remove("visible");
+      clearStudentSearchBtn.classList.remove("visible");
       rebuildColorMap();
       render();
       showToast("Planilha original restaurada.");
@@ -2652,20 +2413,25 @@
     });
 
     profSearchInput.addEventListener("input", e => {
-      state.searchQuery = e.target.value;
-      renderPills();
+      state.profQuery = e.target.value;
+      if (state.selectedProfessor && state.profQuery) {
+        state.selectedProfessor = null;
+      }
+      clearProfSearchBtn.classList.toggle("visible", Boolean(state.profQuery));
+      render();
+    });
+
+    clearProfSearchBtn.addEventListener("click", () => {
+      state.profQuery = "";
+      profSearchInput.value = "";
+      clearProfSearchBtn.classList.remove("visible");
+      render();
+      profSearchInput.focus();
     });
 
     studentSearchInput.addEventListener("input", e => {
       state.studentQuery = e.target.value;
       clearStudentSearchBtn.classList.toggle("visible", Boolean(state.studentQuery));
-      if (state.studentQuery.trim() && state.selectedWeek !== "all") {
-        const matching = getFilteredBancas();
-        const inCurrent = matching.some(b => b.weekNum === state.selectedWeek);
-        if (!inCurrent && matching.length > 0) {
-          state.selectedWeek = matching[0].weekNum;
-        }
-      }
       render();
     });
 
