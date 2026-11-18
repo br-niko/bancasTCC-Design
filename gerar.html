@@ -1329,6 +1329,11 @@ ${closedWarningCss}    .app-shell {
       border-color: var(--accent-border);
     }
 
+    .mini-day.has-banca.is-active-week {
+      border-color: var(--accent-brand);
+      font-weight: 700;
+    }
+
     .mini-day.has-banca:hover {
       background: #fad7e2;
       border-color: var(--accent-brand);
@@ -1711,8 +1716,9 @@ ${closedWarningCss}    .app-shell {
     }
 
     .scroll-arrow-btn:disabled {
-      opacity: 0.35;
-      cursor: default;
+      opacity: 0.28;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     .calendar-scroll {
@@ -2544,12 +2550,12 @@ ${closedWarningBannerHtml}  <main class="app-shell">
             <button type="button" class="view-switch-btn" id="viewListBtn">Lista</button>
           </div>
           <div class="scroll-arrows" id="scrollArrows">
-            <button type="button" class="scroll-arrow-btn" id="scrollLeftBtn" aria-label="Rolar para a esquerda" title="Rolar para a esquerda">
+            <button type="button" class="scroll-arrow-btn" id="scrollLeftBtn" aria-label="Semana anterior" title="Semana anterior">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <button type="button" class="scroll-arrow-btn" id="scrollRightBtn" aria-label="Rolar para a direita" title="Rolar para a direita">
+            <button type="button" class="scroll-arrow-btn" id="scrollRightBtn" aria-label="Próxima semana" title="Próxima semana">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
               </svg>
@@ -2640,17 +2646,28 @@ ${closedWarningBannerHtml}  <main class="app-shell">
       return { firstDate, lastDate, isOngoing, hasStarted, focusDate, pastCount };
     }
 
+    function getInitialWeek(todayIso, days) {
+      if (!days || !days.length) return 1;
+      const week1Days = days.filter(d => d.weekNum === 1);
+      const week1LastDate = week1Days.length ? week1Days[week1Days.length - 1].date : "2026-12-04";
+      return todayIso > week1LastDate ? 2 : 1;
+    }
+
     const initialTodayIso = getTodayIso();
     const initialCtx = getScheduleTimelineContext(initialTodayIso);
+    const initialWeek = getInitialWeek(initialTodayIso, SCHEDULE_DATA.days);
+    const initialWeekDays = (SCHEDULE_DATA.days || []).filter(d => d.weekNum === initialWeek);
+    const todayInInitialWeek = initialWeekDays.some(d => d.date === initialTodayIso);
 
     const state = {
+      selectedWeek: initialWeek,
       selectedProfessor: null,
       profQuery: "",
       studentQuery: "",
       viewMode: window.innerWidth <= 768 ? "list" : "grid",
       userPickedView: false,
-      hidePastDays: initialCtx.isOngoing && initialCtx.pastCount > 0,
-      selectedMobileDay: initialCtx.isOngoing ? initialCtx.focusDate : "all",
+      hidePastDays: false,
+      selectedMobileDay: todayInInitialWeek ? initialTodayIso : "all",
       didInitialScrollToToday: false,
       activeDropdown: null,
       dropdownHighlightIdx: -1
@@ -2764,16 +2781,15 @@ ${closedWarningBannerHtml}  <main class="app-shell">
     function getVisibleDays(ctx, filteredBancas) {
       const allDays = SCHEDULE_DATA.days || [];
       if (!allDays.length) return [];
-      const filtering = hasActiveSearchFilter();
-      if (filtering) {
-        if (!state.hidePastDays || !ctx.isOngoing) return allDays;
-        const matchedDates = new Set(filteredBancas.map(b => b.date));
-        return allDays.filter(d => d.date >= ctx.focusDate || matchedDates.has(d.date));
-      }
+      const currentWeek = state.selectedWeek || 1;
+      const weekDays = allDays.filter(d => d.weekNum === currentWeek);
+      const targetDays = weekDays.length ? weekDays : allDays;
+
       if (state.hidePastDays && ctx.isOngoing && ctx.pastCount > 0) {
-        return allDays.filter(d => d.date >= ctx.focusDate);
+        const remaining = targetDays.filter(d => d.date >= ctx.focusDate);
+        if (remaining.length > 0) return remaining;
       }
-      return allDays;
+      return targetDays;
     }
 
     function getProfSuggestions(query) {
@@ -2928,6 +2944,19 @@ ${closedWarningBannerHtml}  <main class="app-shell">
       state.profQuery = "";
       profSearchInput.value = profName;
       clearProfSearchBtn.classList.add("visible");
+      const profBancas = SCHEDULE_DATA.bancas.filter(b => b.professors.some(p => p.name === profName));
+      if (profBancas.length) {
+        const hasCurrentWeek = profBancas.some(b => {
+          const d = SCHEDULE_DATA.days.find(day => day.date === b.date);
+          return d && d.weekNum === state.selectedWeek;
+        });
+        if (!hasCurrentWeek) {
+          const firstBancaDay = SCHEDULE_DATA.days.find(d => d.date === profBancas[0].date);
+          if (firstBancaDay && firstBancaDay.weekNum) {
+            state.selectedWeek = firstBancaDay.weekNum;
+          }
+        }
+      }
       if (state.viewMode === "list") {
         state.selectedMobileDay = "all";
       }
@@ -2938,6 +2967,12 @@ ${closedWarningBannerHtml}  <main class="app-shell">
       state.studentQuery = studentName;
       studentSearchInput.value = studentName;
       clearStudentSearchBtn.classList.add("visible");
+      if (dateStr) {
+        const dayObj = SCHEDULE_DATA.days.find(d => d.date === dateStr);
+        if (dayObj && dayObj.weekNum) {
+          state.selectedWeek = dayObj.weekNum;
+        }
+      }
       if (state.viewMode === "list" && dateStr) {
         state.selectedMobileDay = dateStr;
       }
@@ -3043,6 +3078,7 @@ ${closedWarningBannerHtml}  <main class="app-shell">
         if (iso === todayIso) classes.push("is-today");
         if (hasAny && iso < todayIso) classes.push("is-past");
         if (hasAny && !hasFiltered) classes.push("empty-for-filter");
+        if (dayObj && dayObj.weekNum === state.selectedWeek) classes.push("is-active-week");
 
         html += \`<button type="button" class="\${classes.join(" ")}" data-date="\${iso}" title="\${dayObj ? dayObj.label : ""}">\${d}</button>\`;
       }
@@ -3052,6 +3088,10 @@ ${closedWarningBannerHtml}  <main class="app-shell">
         el.addEventListener("click", () => {
           const dateStr = el.dataset.date;
           if (!allBancaDates.has(dateStr)) return;
+          const clickedDay = SCHEDULE_DATA.days.find(d => d.date === dateStr);
+          if (clickedDay && clickedDay.weekNum) {
+            state.selectedWeek = clickedDay.weekNum;
+          }
           if (dateStr < todayIso && state.hidePastDays) {
             state.hidePastDays = false;
           }
@@ -3071,12 +3111,15 @@ ${closedWarningBannerHtml}  <main class="app-shell">
         scrollArrows.classList.remove("visible");
         return;
       }
-      const canScroll = calendarScroll.scrollWidth > calendarScroll.clientWidth + 4;
-      scrollArrows.classList.toggle("visible", canScroll);
-      if (canScroll) {
-        scrollLeftBtn.disabled = calendarScroll.scrollLeft <= 4;
-        scrollRightBtn.disabled = calendarScroll.scrollLeft + calendarScroll.clientWidth >= calendarScroll.scrollWidth - 4;
-      }
+      scrollArrows.classList.add("visible");
+      const currentWeek = state.selectedWeek || 1;
+      const maxWeeks = 2;
+      scrollLeftBtn.disabled = currentWeek <= 1;
+      scrollRightBtn.disabled = currentWeek >= maxWeeks;
+      scrollLeftBtn.title = currentWeek > 1 ? "Ver Semana 1 (30 Nov – 04 Dez)" : "Semana 1 (atual)";
+      scrollLeftBtn.setAttribute("aria-label", "Semana 1");
+      scrollRightBtn.title = currentWeek < maxWeeks ? "Ver Semana 2 (07 Dez – 09 Dez)" : "Semana 2 (atual)";
+      scrollRightBtn.setAttribute("aria-label", "Semana 2");
     }
 
     function buildBancaCardHtml(banca, colorTheme) {
@@ -3304,17 +3347,16 @@ ${closedWarningBannerHtml}  <main class="app-shell">
       if (visibleDays.length) {
         const f = visibleDays[0];
         const l = visibleDays[visibleDays.length - 1];
-        const prefix = (state.hidePastDays && ctx.isOngoing && !hasActiveSearchFilter())
-          ? "A partir de hoje"
-          : \`Cronograma (\${visibleDays.length} \${visibleDays.length === 1 ? "dia" : "dias"})\`;
-        calendarRangeLabel.textContent = \`\${prefix} · \${String(f.dayNum).padStart(2, "0")} \${f.monthLabel} a \${String(l.dayNum).padStart(2, "0")} \${l.monthLabel}\`;
+        const weekNum = state.selectedWeek || 1;
+        calendarRangeLabel.textContent = \`Semana \${weekNum} · \${String(f.dayNum).padStart(2, "0")} \${f.monthLabel} a \${String(l.dayNum).padStart(2, "0")} \${l.monthLabel}\`;
       }
 
-      if (ctx.isOngoing && ctx.pastCount > 0) {
+      const pastInVisibleWeek = visibleDays.filter(d => d.date < todayIso).length;
+      if (ctx.isOngoing && pastInVisibleWeek > 0) {
         togglePastDaysBtn.style.display = "inline-flex";
         togglePastDaysBtn.classList.toggle("is-active", !state.hidePastDays);
         togglePastDaysBtn.textContent = state.hidePastDays
-          ? \`Mostrar \${ctx.pastCount} \${ctx.pastCount === 1 ? "dia anterior" : "dias anteriores"}\`
+          ? \`Mostrar \${pastInVisibleWeek} \${pastInVisibleWeek === 1 ? "dia anterior" : "dias anteriores"}\`
           : "Ocultar dias anteriores";
       } else {
         togglePastDaysBtn.style.display = "none";
@@ -3404,11 +3446,21 @@ ${closedWarningBannerHtml}  <main class="app-shell">
     }
 
     scrollLeftBtn.addEventListener("click", () => {
-      calendarScroll.scrollBy({ left: -420, behavior: "smooth" });
+      if (state.selectedWeek > 1) {
+        state.selectedWeek = 1;
+        calendarScroll.scrollLeft = 0;
+        if (state.viewMode === "list") state.selectedMobileDay = "all";
+        render();
+      }
     });
 
     scrollRightBtn.addEventListener("click", () => {
-      calendarScroll.scrollBy({ left: 420, behavior: "smooth" });
+      if (state.selectedWeek < 2) {
+        state.selectedWeek = 2;
+        calendarScroll.scrollLeft = 0;
+        if (state.viewMode === "list") state.selectedMobileDay = "all";
+        render();
+      }
     });
 
     calendarScroll.addEventListener("scroll", updateScrollArrows, { passive: true });
@@ -3443,12 +3495,18 @@ ${closedWarningBannerHtml}  <main class="app-shell">
     });
 
     jumpTodayBtn.addEventListener("click", () => {
-      const ctx = getScheduleTimelineContext(getTodayIso());
+      const todayIso = getTodayIso();
+      const ctx = getScheduleTimelineContext(todayIso);
       if (!ctx.focusDate) return;
+      const todayDay = SCHEDULE_DATA.days.find(d => d.date === todayIso);
+      if (todayDay && todayDay.weekNum) {
+        state.selectedWeek = todayDay.weekNum;
+      }
       if (state.viewMode === "list") {
         state.selectedMobileDay = ctx.focusDate;
         render();
       } else {
+        render();
         scrollToDateColumn(ctx.focusDate);
       }
     });
@@ -3471,6 +3529,19 @@ ${closedWarningBannerHtml}  <main class="app-shell">
         state.selectedProfessor = null;
       }
       clearProfSearchBtn.classList.toggle("visible", Boolean(state.profQuery));
+      if (state.profQuery.trim()) {
+        const matches = getFilteredBancas();
+        if (matches.length) {
+          const inCur = matches.some(b => {
+            const d = SCHEDULE_DATA.days.find(day => day.date === b.date);
+            return d && d.weekNum === state.selectedWeek;
+          });
+          if (!inCur) {
+            const firstD = SCHEDULE_DATA.days.find(d => d.date === matches[0].date);
+            if (firstD && firstD.weekNum) state.selectedWeek = firstD.weekNum;
+          }
+        }
+      }
       if (state.viewMode === "list" && state.profQuery.trim()) {
         state.selectedMobileDay = "all";
       }
@@ -3497,6 +3568,19 @@ ${closedWarningBannerHtml}  <main class="app-shell">
     studentSearchInput.addEventListener("input", e => {
       state.studentQuery = e.target.value;
       clearStudentSearchBtn.classList.toggle("visible", Boolean(state.studentQuery));
+      if (state.studentQuery.trim()) {
+        const matches = getFilteredBancas();
+        if (matches.length) {
+          const inCur = matches.some(b => {
+            const d = SCHEDULE_DATA.days.find(day => day.date === b.date);
+            return d && d.weekNum === state.selectedWeek;
+          });
+          if (!inCur) {
+            const firstD = SCHEDULE_DATA.days.find(d => d.date === matches[0].date);
+            if (firstD && firstD.weekNum) state.selectedWeek = firstD.weekNum;
+          }
+        }
+      }
       if (state.viewMode === "list" && state.studentQuery.trim()) {
         state.selectedMobileDay = "all";
       }
