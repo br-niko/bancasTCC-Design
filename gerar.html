@@ -3163,7 +3163,7 @@ ${closedWarningBannerHtml}  <main class="app-shell">
       const nowTimeText = \`\${String(nowHour).padStart(2, "0")}:\${String(nowMin).padStart(2, "0")}\`;
       const nowPct = Math.round((nowMin / 60) * 1000) / 10;
 
-      let html = '<div class="cal-corner">Horário</div>';
+      let html = '<div class="cal-corner" aria-hidden="true"></div>';
       visibleDays.forEach((d, dayIdx) => {
         const cnt = dayCounts.get(d.date) || 0;
         const isToday = d.date === todayIso;
