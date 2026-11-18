@@ -1,0 +1,3573 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerar Calendário — Bancas TCC Design</title>
+  <style>
+    :root {
+      --bg-page: #eceef2;
+      --surface: #ffffff;
+      --surface-muted: #f5f6f8;
+      --border: #d5d9e2;
+      --border-subtle: #e3e6ed;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --text-muted: #6b7280;
+      --accent-blue: #2347c5;
+      --accent-blue-soft: #eef3ff;
+      --accent-blue-border: #b6c8f5;
+      --success: #157f5c;
+      --success-bg: #ecfdf5;
+      --success-border: #a7f3d0;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --warn: #92400e;
+      --warn-bg: #fffbeb;
+      --warn-border: #fde68a;
+      --radius-lg: 10px;
+      --radius-pill: 999px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background: var(--bg-page);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 20px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-text p {
+      margin-top: 3px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .btn-link {
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 7px 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-link:hover {
+      background: #e5e7eb;
+      color: var(--text-primary);
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed #b9c2d0;
+      border-radius: 8px;
+      background: var(--surface-muted);
+      padding: 36px 20px;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .dropzone:hover,
+    .dropzone.drag-over {
+      border-color: var(--accent-blue);
+      background: var(--accent-blue-soft);
+    }
+
+    .dropzone-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-blue);
+    }
+
+    .dropzone strong {
+      font-size: 15px;
+      color: var(--text-primary);
+    }
+
+    .dropzone span {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .btn-primary {
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #ffffff;
+      background: var(--accent-blue);
+      border: 1px solid var(--accent-blue);
+      border-radius: 8px;
+      padding: 10px 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #1b38a3;
+      border-color: #1b38a3;
+    }
+
+    .btn-primary.is-danger-btn {
+      background: var(--danger);
+      border-color: var(--danger);
+    }
+
+    .btn-primary.is-danger-btn:hover:not(:disabled) {
+      background: #991b1b;
+      border-color: #991b1b;
+    }
+
+    .btn-secondary {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 9px 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-secondary:hover {
+      background: #e5e7eb;
+    }
+
+    /* Results */
+    .results-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .results-panel.visible {
+      display: flex;
+    }
+
+    .file-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .file-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .file-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .file-span {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat-card {
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-card.has-closed {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .stat-card.has-closed .stat-label {
+      color: var(--danger);
+    }
+
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stat-card.has-closed .stat-value {
+      color: var(--danger);
+    }
+
+    .closed-preview {
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--warn);
+    }
+
+    .closed-preview ul {
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .option-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      cursor: pointer;
+    }
+
+    .option-card:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .option-card input {
+      margin-top: 3px;
+      width: 17px;
+      height: 17px;
+      accent-color: var(--accent-blue);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .option-body {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+    }
+
+    .option-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .option-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .target-file-badge {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .target-file-badge.public {
+      background: var(--success-bg);
+      color: var(--success);
+      border: 1px solid var(--success-border);
+    }
+
+    .target-file-badge.closed {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: 1px solid var(--danger-border);
+    }
+
+    .option-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+    }
+
+    .warning-preview-box {
+      padding: 10px 14px;
+      border-radius: 6px;
+      background: #b91c1c;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .warning-preview-box.visible {
+      display: flex;
+    }
+
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .error-banner {
+      display: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .error-banner.visible {
+      display: block;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 150;
+      padding: 11px 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px -5px rgba(17, 24, 39, 0.3);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 720px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .actions-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <main class="app-shell">
+    <header class="panel">
+      <div class="header-row">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="12" y1="18" x2="12" y2="12"></line>
+              <polyline points="9 15 12 12 15 15"></polyline>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h1>Gerar Calendário — Bancas TCC Design</h1>
+            <p>Suba a planilha <code>.xlsx</code> para gerar <strong>index.html</strong> (público) ou <strong>fechadas.html</strong> (interno).</p>
+          </div>
+        </div>
+        <a href="index.html" class="btn-link">Ver index.html atual</a>
+      </div>
+    </header>
+
+    <section class="panel">
+      <input type="file" id="xlsxFileInput" accept=".xlsx" hidden />
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Selecionar ou soltar planilha .xlsx">
+        <div class="dropzone-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+        <strong>Arraste a planilha (.xlsx) aqui ou clique para selecionar</strong>
+        <span>Todo o processamento acontece localmente no navegador.</span>
+      </div>
+      <div class="error-banner" id="errorBanner" style="margin-top: 12px;"></div>
+    </section>
+
+    <section class="panel results-panel" id="resultsPanel">
+      <div class="file-banner">
+        <div class="file-meta">
+          <span class="file-name" id="fileNameLabel"></span>
+          <span class="file-span" id="fileSpanLabel"></span>
+        </div>
+        <button type="button" class="btn-secondary" id="pickAnotherBtn">Trocar planilha</button>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-label">Total na planilha</span>
+          <span class="stat-value" id="statTotal">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Bancas públicas</span>
+          <span class="stat-value" id="statPublic">0</span>
+        </div>
+        <div class="stat-card" id="statClosedCard">
+          <span class="stat-label">Bancas fechadas</span>
+          <span class="stat-value" id="statClosed">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Professores</span>
+          <span class="stat-value" id="statProfs">0</span>
+        </div>
+      </div>
+
+      <div class="closed-preview" id="closedPreview" style="display: none;">
+        <strong>Bancas fechadas detectadas nesta planilha:</strong>
+        <ul id="closedPreviewList"></ul>
+      </div>
+
+      <label class="option-card" for="omitClosedCheckbox">
+        <input type="checkbox" id="omitClosedCheckbox" checked />
+        <div class="option-body">
+          <div class="option-title-row">
+            <span class="option-title">Omitir bancas fechadas</span>
+            <span class="target-file-badge public" id="targetFileBadge">index.html</span>
+          </div>
+          <p class="option-desc" id="omitClosedDesc"></p>
+        </div>
+      </label>
+
+      <div class="warning-preview-box" id="warningPreviewBox">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span>Prévia do aviso no topo de fechadas.html: "Não divulgar! Aqui contém as bancas fechadas"</span>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="btn-primary" id="generateBtn">Gerar e baixar index.html</button>
+        <button type="button" class="btn-secondary" id="generateBothBtn">Baixar ambas (index.html + fechadas.html)</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ALIASES = {
+      "adriano camargo de luca": "Adriano Camargo De Luca",
+      "carmo flaire": "Carmo Flaire",
+      "debora oelsner lopes": "Debora Oelsner Lopes",
+      "eber evangelista": "Eber Evangelista",
+      "eliana helena dib": "Eliana Helena Dib",
+      "elis marina de souza": "Elis Marina de Souza",
+      "elis souza": "Elis Marina de Souza",
+      "erico fernando de oliveira": "Érico Fernando de Oliveira",
+      "fabio nascimento silveira": "Fábio Nascimento Silveira",
+      "fabio silveira": "Fábio Nascimento Silveira",
+      "flavio shimoda": "Flavio Shimoda",
+      "gabrielle da fonseca hartmann grimm": "Gabrielle da Fonseca Hartmann Grimm",
+      "gabrielle hartmann grimm": "Gabrielle da Fonseca Hartmann Grimm",
+      "gilberto de ataide batista faria": "Gilberto de Ataide Batista Faria",
+      "gilberto faria": "Gilberto de Ataide Batista Faria",
+      "gilberto farias": "Gilberto de Ataide Batista Faria",
+      "joao cesar lopes toledo filho": "João Cesar Lopes Toledo Filho",
+      "jorgson ksam smith": "Jorgson Ksam Smith Moraes Junior",
+      "jorgson ksam smith moraes junior": "Jorgson Ksam Smith Moraes Junior",
+      "jorgson smith": "Jorgson Ksam Smith Moraes Junior",
+      "lauro arthur farias paiva cohen": "Lauro Arthur Farias Paiva Cohen",
+      "lauro cohen": "Lauro Arthur Farias Paiva Cohen",
+      "leticia dallegrave": "Leticia Dallegrave",
+      "lucas freire": "Lucas Freire",
+      "luciana chen": "Luciana Chen",
+      "luciano mariussi": "Luciano Mariussi",
+      "marcella de moraes ocke mussnich": "Marcella de Moraes Ocke Mussnich",
+      "marcio a gianelli hulk": "Marcio A. Giannelli (Hulk)",
+      "marcio a giannelli hulk": "Marcio A. Giannelli (Hulk)",
+      "marcio hulk gianelli": "Marcio A. Giannelli (Hulk)",
+      "marcos fruet palhares": "Marcos Fruet Palhares",
+      "marcos lamego": "Marcos Lamego",
+      "maria beatriz saraiva dinelli": "Maria Beatriz Saraiva Dinelli",
+      "maria jose spiteri tavolaro passos": "Maria José Spiteri Tavolaro Passos",
+      "marilia gabriela lira": "Marília Gabriella Lima Lira da Silva",
+      "marilia gabriella lima lira da silva": "Marília Gabriella Lima Lira da Silva",
+      "marilia gabriella lira": "Marília Gabriella Lima Lira da Silva",
+      "nikolas de almeida lorencini": "Nikolas de Almeida Lorencini",
+      "nikolas lorencini": "Nikolas de Almeida Lorencini",
+      "paulo henrique gomes magri": "Paulo Henrique Gomes Magri",
+      "rafael lucena": "Rafael Lucena",
+      "rosana martinez": "Rosana Martinez",
+      "saulo de oliveira machado": "Saulo de Oliveira Machado",
+      "thabata regina de souza brito": "Thabata Regina de Souza Brito",
+      "thaciana belarmino": "Thaciana Caroline Belarmino Ferreira",
+      "thaciana caroline belarmino ferreira": "Thaciana Caroline Belarmino Ferreira",
+      "thiago hara": "Thiago Hara Dias",
+      "thiago hara dias": "Thiago Hara Dias",
+      "weberson rodrigues santiago": "Weberson Rodrigues Santiago",
+      "weberson santiago": "Weberson Rodrigues Santiago"
+    };
+
+    const MONTH_PT = { 1: "Jan", 2: "Fev", 3: "Mar", 4: "Abr", 5: "Mai", 6: "Jun", 7: "Jul", 8: "Ago", 9: "Set", 10: "Out", 11: "Nov", 12: "Dez" };
+    const WEEKDAY_NAMES_JS = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const WEEKDAY_SHORT = { "Segunda-feira": "Seg", "Terça-feira": "Ter", "Quarta-feira": "Qua", "Quinta-feira": "Qui", "Sexta-feira": "Sex", "Sábado": "Sáb", "Domingo": "Dom" };
+
+    let parsedRawSchedule = null;
+
+    const xlsxFileInput = document.getElementById("xlsxFileInput");
+    const dropzone = document.getElementById("dropzone");
+    const errorBanner = document.getElementById("errorBanner");
+    const resultsPanel = document.getElementById("resultsPanel");
+    const fileNameLabel = document.getElementById("fileNameLabel");
+    const fileSpanLabel = document.getElementById("fileSpanLabel");
+    const pickAnotherBtn = document.getElementById("pickAnotherBtn");
+    const statTotal = document.getElementById("statTotal");
+    const statPublic = document.getElementById("statPublic");
+    const statClosedCard = document.getElementById("statClosedCard");
+    const statClosed = document.getElementById("statClosed");
+    const statProfs = document.getElementById("statProfs");
+    const closedPreview = document.getElementById("closedPreview");
+    const closedPreviewList = document.getElementById("closedPreviewList");
+    const omitClosedCheckbox = document.getElementById("omitClosedCheckbox");
+    const targetFileBadge = document.getElementById("targetFileBadge");
+    const omitClosedDesc = document.getElementById("omitClosedDesc");
+    const warningPreviewBox = document.getElementById("warningPreviewBox");
+    const generateBtn = document.getElementById("generateBtn");
+    const generateBothBtn = document.getElementById("generateBothBtn");
+    const toast = document.getElementById("toast");
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add("show");
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => toast.classList.remove("show"), 3600);
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normText(s) {
+      return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    }
+
+    function normKeyProf(s) {
+      return normText(s)
+        .replace(/\(confirmar\)/g, "")
+        .replace(/[?\–\-().,]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
+    // ---------------- Client-Side Zero-Dependency XLSX Parser ----------------
+    async function unzipXlsxXmlFiles(arrayBuffer) {
+      const bytes = new Uint8Array(arrayBuffer);
+      const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+      let eocd = -1;
+      for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65557); i--) {
+        if (view.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+      }
+      if (eocd < 0) throw new Error("Arquivo inválido. Envie uma planilha .xlsx válida.");
+      const cdOffset = view.getUint32(eocd + 16, true);
+      const totalEntries = view.getUint16(eocd + 10, true);
+      const dec = new TextDecoder("utf-8");
+      const files = {};
+      let ptr = cdOffset;
+      for (let i = 0; i < totalEntries; i++) {
+        if (view.getUint32(ptr, true) !== 0x02014b50) break;
+        const compMethod = view.getUint16(ptr + 10, true);
+        const compSize = view.getUint32(ptr + 20, true);
+        const nameLen = view.getUint16(ptr + 28, true);
+        const extraLen = view.getUint16(ptr + 30, true);
+        const commentLen = view.getUint16(ptr + 32, true);
+        const localHeaderOffset = view.getUint32(ptr + 42, true);
+        const name = dec.decode(bytes.subarray(ptr + 46, ptr + 46 + nameLen));
+        ptr += 46 + nameLen + extraLen + commentLen;
+
+        if (!name.endsWith(".xml") && !name.endsWith(".rels")) continue;
+        const lhNameLen = view.getUint16(localHeaderOffset + 26, true);
+        const lhExtraLen = view.getUint16(localHeaderOffset + 28, true);
+        const dataStart = localHeaderOffset + 30 + lhNameLen + lhExtraLen;
+        const compData = bytes.subarray(dataStart, dataStart + compSize);
+        if (compMethod === 0) {
+          files[name] = dec.decode(compData);
+        } else if (compMethod === 8) {
+          const ds = new DecompressionStream("deflate-raw");
+          const writer = ds.writable.getWriter();
+          writer.write(compData);
+          writer.close();
+          const outBuf = await new Response(ds.readable).arrayBuffer();
+          files[name] = dec.decode(outBuf);
+        }
+      }
+      return files;
+    }
+
+    function colToIdx(col) {
+      let idx = 0;
+      for (let i = 0; i < col.length; i++) idx = idx * 26 + (col.charCodeAt(i) - 64);
+      return idx;
+    }
+
+    function idxToCol(idx) {
+      let res = "";
+      while (idx > 0) {
+        const rem = (idx - 1) % 26;
+        res = String.fromCharCode(65 + rem) + res;
+        idx = Math.floor((idx - 1) / 26);
+      }
+      return res;
+    }
+
+    function getIsoWeekKey(dateStr) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      const dayNum = dt.getUTCDay() || 7;
+      dt.setUTCDate(dt.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(dt.getUTCFullYear(), 0, 1));
+      const weekNo = Math.ceil((((dt - yearStart) / 86400000) + 1) / 7);
+      return `${dt.getUTCFullYear()}-W${String(weekNo).padStart(2, "0")}`;
+    }
+
+    function stripPrefixJs(text, prefixes) {
+      const s = String(text || "").replace(/\s+/g, " ").trim();
+      for (const p of prefixes) {
+        if (s.toLowerCase().startsWith(p.toLowerCase())) {
+          return s.slice(p.length).trim();
+        }
+      }
+      return s;
+    }
+
+    function cleanStudentNameJs(name) {
+      if (!name) return "";
+      const letters = name.match(/[A-Za-zÀ-ÖØ-öø-ÿ]/g) || [];
+      const uppers = letters.filter(c => c === c.toUpperCase() && c !== c.toLowerCase());
+      if (letters.length && uppers.length / letters.length > 0.85) {
+        const lowerWords = new Set(["da", "de", "do", "das", "dos", "e"]);
+        return name.split(/\s+/).map((w, i) => {
+          const lw = w.toLowerCase();
+          if (i > 0 && lowerWords.has(lw)) return lw;
+          return lw.charAt(0).toUpperCase() + lw.slice(1);
+        }).join(" ");
+      }
+      return name;
+    }
+
+    function canonicalizeProfessorJs(raw) {
+      const cleaned = String(raw || "").replace(/\s+/g, " ").trim();
+      if (!cleaned || cleaned === "–" || cleaned === "-" || cleaned === "—") return null;
+      const needsConfirm = /confirmar/i.test(cleaned) || cleaned.includes("?");
+      const key = normKeyProf(cleaned);
+      if (!key) return null;
+      let canonical = ALIASES[key];
+      if (!canonical) {
+        canonical = cleaned.replace(/\s*\(confirmar\)\s*/gi, "").replace(/^[?\s–-]+|[?\s–-]+$/g, "");
+      }
+      return { name: canonical, needsConfirm, raw: cleaned, key };
+    }
+
+    function getProfessorListFromBase(baseBancas) {
+      const counts = new Map();
+      for (const b of baseBancas) {
+        for (const p of b.professors) {
+          counts.set(p.name, (counts.get(p.name) || 0) + 1);
+        }
+      }
+      return Array.from(counts.entries())
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => (b.count - a.count) || a.name.localeCompare(b.name, "pt-BR"));
+    }
+
+    async function parseXlsxBuffer(arrayBuffer, fileName) {
+      const files = await unzipXlsxXmlFiles(arrayBuffer);
+      const parser = new DOMParser();
+
+      const sst = [];
+      if (files["xl/sharedStrings.xml"]) {
+        const sstDoc = parser.parseFromString(files["xl/sharedStrings.xml"], "application/xml");
+        const sis = sstDoc.getElementsByTagNameNS("*", "si");
+        for (let i = 0; i < sis.length; i++) {
+          const ts = sis[i].getElementsByTagNameNS("*", "t");
+          let str = "";
+          for (let j = 0; j < ts.length; j++) str += ts[j].textContent || "";
+          sst.push(str);
+        }
+      }
+
+      let sheetPath = "xl/worksheets/sheet1.xml";
+      if (!files[sheetPath]) {
+        sheetPath = Object.keys(files).find(k => k.startsWith("xl/worksheets/sheet") && k.endsWith(".xml"));
+      }
+      if (!sheetPath || !files[sheetPath]) {
+        throw new Error("Planilha não encontrada dentro do arquivo .xlsx.");
+      }
+
+      const wsDoc = parser.parseFromString(files[sheetPath], "application/xml");
+      const rows = wsDoc.getElementsByTagNameNS("*", "row");
+      const grid = new Map();
+      let maxRow = 0;
+      let maxCol = 0;
+
+      for (let i = 0; i < rows.length; i++) {
+        const rIdx = Number(rows[i].getAttribute("r"));
+        if (rIdx > maxRow) maxRow = rIdx;
+        const cells = rows[i].getElementsByTagNameNS("*", "c");
+        for (let j = 0; j < cells.length; j++) {
+          const c = cells[j];
+          const ref = c.getAttribute("r") || "";
+          const m = ref.match(/^([A-Z]+)(\d+)$/);
+          if (!m) continue;
+          const col = m[1];
+          const r = Number(m[2]);
+          const ci = colToIdx(col);
+          if (ci > maxCol) maxCol = ci;
+          const t = c.getAttribute("t");
+          const vEl = c.getElementsByTagNameNS("*", "v")[0];
+          const isEl = c.getElementsByTagNameNS("*", "is")[0];
+          let val = null;
+          if (vEl) {
+            val = t === "s" ? sst[Number(vEl.textContent)] : vEl.textContent;
+          } else if (isEl) {
+            const ts = isEl.getElementsByTagNameNS("*", "t");
+            val = "";
+            for (let k = 0; k < ts.length; k++) val += ts[k].textContent || "";
+          }
+          if (val !== null && val !== undefined) {
+            grid.set(`${col}:${r}`, val);
+          }
+        }
+      }
+
+      const days = [];
+      const isoWeekMap = new Map();
+      for (let ci = 2; ci <= maxCol; ci++) {
+        const col = idxToCol(ci);
+        const rawVal = String(grid.get(`${col}:1`) || "").trim();
+        let dtObj = null;
+        if (/^\d+(\.\d+)?$/.test(rawVal) && Number(rawVal) >= 30000) {
+          const serial = Math.floor(Number(rawVal));
+          dtObj = new Date(Date.UTC(1899, 11, 30 + serial));
+        } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(rawVal)) {
+          const [dd, mm, yyyy] = rawVal.split("/").map(Number);
+          dtObj = new Date(Date.UTC(yyyy, mm - 1, dd));
+        } else if (/^\d{4}-\d{2}-\d{2}$/.test(rawVal)) {
+          const [yyyy, mm, dd] = rawVal.split("-").map(Number);
+          dtObj = new Date(Date.UTC(yyyy, mm - 1, dd));
+        }
+        if (!dtObj) continue;
+
+        const yyyy = dtObj.getUTCFullYear();
+        const mm = dtObj.getUTCMonth() + 1;
+        const dd = dtObj.getUTCDate();
+        const dateStr = `${yyyy}-${String(mm).padStart(2, "0")}-${String(dd).padStart(2, "0")}`;
+        const nextCol = idxToCol(ci + 1);
+        const weekday = String(grid.get(`${nextCol}:1`) || "").trim() || WEEKDAY_NAMES_JS[dtObj.getUTCDay()];
+        const wKey = getIsoWeekKey(dateStr);
+        if (!isoWeekMap.has(wKey)) isoWeekMap.set(wKey, isoWeekMap.size + 1);
+        const weekNum = isoWeekMap.get(wKey);
+
+        days.push({
+          col,
+          date: dateStr,
+          dayNum: dd,
+          month: mm,
+          year: yyyy,
+          monthLabel: MONTH_PT[mm],
+          weekday,
+          weekdayShort: WEEKDAY_SHORT[weekday] || weekday.slice(0, 3),
+          weekNum,
+          label: `${WEEKDAY_SHORT[weekday] || weekday.slice(0, 3)} · ${String(dd).padStart(2, "0")} ${MONTH_PT[mm]}`
+        });
+      }
+
+      days.sort((a, b) => a.date.localeCompare(b.date));
+
+      if (!days.length) {
+        throw new Error("Não foram encontradas datas na linha 1 da planilha.");
+      }
+
+      const hours = [];
+      for (let r = 3; r <= maxRow; r++) {
+        const a = String(grid.get(`A:${r}`) || "").trim();
+        if (a) {
+          const m = a.match(/^(\d+)/);
+          if (m) {
+            const hInt = Number(m[1]);
+            hours.push({ row: r, hour: hInt, start: `${String(hInt).padStart(2, "0")}:00`, end: `${String(hInt + 1).padStart(2, "0")}:00` });
+          }
+        }
+      }
+
+      hours.sort((a, b) => a.hour - b.hour);
+
+      if (!hours.length) {
+        throw new Error("Não foram encontrados horários na coluna A da planilha.");
+      }
+
+      const rawBancas = [];
+      const seenCanonicalKeys = new Map();
+      for (const h of hours) {
+        for (const d of days) {
+          const c = d.col;
+          const vals = [0, 1, 2, 3, 4, 5].map(i => grid.get(`${c}:${h.row + i}`) || "");
+          const tituloRaw = stripPrefixJs(vals[0], ["Titulo:", "Título:"]);
+          const alunoRaw = stripPrefixJs(vals[1], ["Nome do aluno:"]);
+          const profRaws = [
+            stripPrefixJs(vals[2], ["Nome do orientador:"]),
+            stripPrefixJs(vals[3], ["Convidado 01:"]),
+            stripPrefixJs(vals[4], ["Convidado 02:"])
+          ];
+          const salaRaw = stripPrefixJs(vals[5], ["Sala:"]);
+          const parsedProfs = profRaws.map(canonicalizeProfessorJs).filter(Boolean);
+          if (!tituloRaw && !alunoRaw && !parsedProfs.length && !salaRaw) continue;
+
+          for (const p of parsedProfs) {
+            if (!seenCanonicalKeys.has(p.key)) seenCanonicalKeys.set(p.key, p.name);
+          }
+          rawBancas.push({ h, d, tituloRaw, alunoRaw, parsedProfs, salaRaw });
+        }
+      }
+
+      const allKeys = Array.from(seenCanonicalKeys.keys());
+      const dynamicMerge = new Map();
+      for (const shortK of allKeys) {
+        if (ALIASES[shortK]) continue;
+        const st = shortK.split(" ");
+        if (st.length < 2) continue;
+        const candidates = allKeys.filter(longK => {
+          if (longK === shortK) return false;
+          const lt = longK.split(" ");
+          if (lt.length <= st.length) return false;
+          return st[0] === lt[0] && st[st.length - 1] === lt[lt.length - 1] && st.every(tok => lt.includes(tok));
+        });
+        if (candidates.length === 1) {
+          dynamicMerge.set(shortK, seenCanonicalKeys.get(candidates[0]));
+        }
+      }
+
+      const bancas = rawBancas.map((item, idx) => {
+        const professors = [];
+        const seenInBanca = new Set();
+        for (const p of item.parsedProfs) {
+          const finalName = dynamicMerge.get(p.key) || p.name;
+          if (!seenInBanca.has(finalName)) {
+            seenInBanca.add(finalName);
+            professors.push({ name: finalName, needsConfirm: p.needsConfirm, raw: p.raw });
+          }
+        }
+        const isClosed = /banca\s*fechada/i.test(item.tituloRaw);
+        let cleanTitle = item.tituloRaw.replace(/^\s*\(?\s*banca\s*fechada\s*\)?\s*[-–:]?\s*/i, "").trim();
+        if (!cleanTitle && isClosed) cleanTitle = "Banca Fechada";
+
+        return {
+          id: `banca-${idx + 1}`,
+          date: item.d.date,
+          weekNum: item.d.weekNum,
+          hour: item.h.hour,
+          startTime: item.h.start,
+          endTime: item.h.end,
+          title: cleanTitle || "Sem título informado",
+          student: cleanStudentNameJs(item.alunoRaw),
+          professors,
+          isClosed,
+          sala: item.salaRaw
+        };
+      });
+
+      const professorsList = getProfessorListFromBase(bancas);
+
+      return {
+        sourceName: fileName,
+        days,
+        hours: hours.map(h => ({ hour: h.hour, start: h.start, end: h.end })),
+        bancas,
+        professors: professorsList
+      };
+    }
+
+    // ---------------- HTML Generator ----------------
+    function buildScheduleDataset(raw, omitClosed) {
+      const finalBancas = omitClosed ? raw.bancas.filter(b => !b.isClosed) : raw.bancas;
+      const finalProfs = getProfessorListFromBase(finalBancas);
+      return {
+        sourceName: raw.sourceName,
+        days: raw.days,
+        hours: raw.hours,
+        bancas: finalBancas,
+        professors: finalProfs
+      };
+    }
+
+    function generateCalendarHtml(rawSchedule, options) {
+      const isClosedVersion = Boolean(options && options.isClosedVersion);
+      const scheduleData = buildScheduleDataset(rawSchedule, !isClosedVersion);
+      const serializedData = JSON.stringify(scheduleData).replace(/</g, "\\u003c");
+      const firstDay = scheduleData.days[0];
+      const lastDay = scheduleData.days[scheduleData.days.length - 1];
+      const dateSpanDefault = firstDay && lastDay
+        ? `${String(firstDay.dayNum).padStart(2, "0")} ${firstDay.monthLabel} – ${String(lastDay.dayNum).padStart(2, "0")} ${lastDay.monthLabel} ${lastDay.year || 2026}`
+        : "";
+      const summaryDefault = `${scheduleData.bancas.length} ${scheduleData.bancas.length === 1 ? "banca" : "bancas"}`;
+      const pageTitle = isClosedVersion
+        ? "Bancas TCC Design (Fechadas — Não divulgar)"
+        : "Bancas TCC Design";
+
+      const closedWarningBannerHtml = isClosedVersion
+        ? `  <div class="closed-warning-banner" role="alert">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+      <line x1="12" y1="9" x2="12" y2="13"></line>
+      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+    </svg>
+    <span>Não divulgar! Aqui contém as bancas fechadas</span>
+  </div>\n`
+        : "";
+
+      const closedWarningCss = isClosedVersion
+        ? `    .closed-warning-banner {
+      background: #b91c1c;
+      color: #ffffff;
+      border-bottom: 2px solid #7f1d1d;
+      padding: 11px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 95;
+    }\n\n`
+        : "";
+
+      return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${escapeHtml(pageTitle)}</title>
+  <style>
+    :root {
+      --bg-page: #eceef2;
+      --surface: #ffffff;
+      --surface-muted: #f5f6f8;
+      --grid-cell-bg: #f1f3f6;
+      --grid-cell-past: #e9ecf1;
+      --grid-cell-today: #ffffff;
+      --border: #d5d9e2;
+      --border-subtle: #e3e6ed;
+      --text-primary: #111827;
+      --text-secondary: #4b5563;
+      --text-muted: #6b7280;
+      --accent-blue: #2347c5;
+      --accent-blue-soft: #eef3ff;
+      --accent-blue-border: #b6c8f5;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --danger-border: #fecaca;
+      --radius-lg: 10px;
+      --radius-md: 6px;
+      --radius-pill: 999px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+      background: var(--bg-page);
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+${closedWarningCss}    .app-shell {
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 16px 20px 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .top-bar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .header-main {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .header-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--accent-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .brand-text h1 {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      flex-wrap: wrap;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+    }
+
+    .header-today-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-blue-soft);
+      border: 1px solid var(--accent-blue-border);
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .header-today-pill:hover {
+      background: #e1ebff;
+    }
+
+    .mini-cal-card {
+      padding: 12px 16px;
+      min-width: 244px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .mini-cal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .mini-cal-badge {
+      font-size: 10.5px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+    }
+
+    .mini-cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+      text-align: center;
+    }
+
+    .mini-wd {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding-bottom: 2px;
+    }
+
+    .mini-day {
+      font-size: 11px;
+      font-weight: 600;
+      height: 23px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: default;
+      font-family: inherit;
+    }
+
+    .mini-day.has-banca {
+      color: var(--text-primary);
+      cursor: pointer;
+      background: var(--accent-blue-soft);
+      border-color: #d6e2ff;
+    }
+
+    .mini-day.has-banca:hover {
+      background: #dce7ff;
+      border-color: var(--accent-blue-border);
+    }
+
+    .mini-day.has-banca::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+    }
+
+    .mini-day.is-today {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    .mini-day.is-today::after {
+      background: #fff;
+    }
+
+    .mini-day.is-past {
+      opacity: 0.55;
+    }
+
+    .mini-day.empty-for-filter {
+      opacity: 0.3;
+    }
+
+    .search-bar-panel {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-inputs-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 1;
+      width: 100%;
+    }
+
+    .autocomplete-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      flex: 0 1 280px;
+      min-width: 220px;
+    }
+
+    .autocomplete-wrap svg {
+      position: absolute;
+      left: 12px;
+      color: var(--text-muted);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .search-input {
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 32px 8px 35px;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .search-input:hover {
+      border-color: #aeb6c4;
+      background: #fff;
+    }
+
+    .search-input:focus {
+      background: #fff;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px rgba(35, 71, 197, 0.12);
+    }
+
+    .clear-inline-btn {
+      position: absolute;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: none;
+      background: #d8dde6;
+      color: var(--text-secondary);
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-inline-btn.visible {
+      display: inline-flex;
+    }
+
+    .clear-inline-btn:hover {
+      background: #c5ccd8;
+      color: var(--text-primary);
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      right: 0;
+      z-index: 80;
+      background: #ffffff;
+      border: 1px solid #c4cbd6;
+      border-radius: 8px;
+      box-shadow: 0 10px 24px -6px rgba(17, 24, 39, 0.16);
+      max-height: 280px;
+      overflow-y: auto;
+      display: none;
+      padding: 4px;
+    }
+
+    .autocomplete-dropdown.open {
+      display: block;
+    }
+
+    .autocomplete-item {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 10px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--text-primary);
+    }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.is-active {
+      background: var(--accent-blue-soft);
+    }
+
+    .autocomplete-item-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .autocomplete-item-col {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      gap: 2px;
+    }
+
+    .autocomplete-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .autocomplete-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .autocomplete-title mark {
+      background: #dbe7ff;
+      color: #163399;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    .autocomplete-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .autocomplete-count {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--surface-muted);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 2px 7px;
+      flex-shrink: 0;
+    }
+
+    .autocomplete-empty {
+      padding: 10px 12px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    .active-filter-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px 6px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-blue-soft);
+      border: 1px solid var(--accent-blue-border);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent-blue);
+    }
+
+    .clear-filter-btn {
+      border: none;
+      background: #ffffff;
+      color: var(--accent-blue);
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      font-size: 13px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clear-filter-btn:hover {
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    .calendar-panel {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .calendar-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calendar-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calendar-range-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .nav-pill-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-pill);
+      padding: 5px 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-pill-btn:hover {
+      background: #e9ecf1;
+      color: var(--text-primary);
+    }
+
+    .nav-pill-btn.is-active {
+      background: var(--accent-blue-soft);
+      border-color: var(--accent-blue-border);
+      color: var(--accent-blue);
+    }
+
+    .calendar-nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .view-switcher {
+      display: inline-flex;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .view-switch-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+
+    .view-switch-btn.active {
+      background: #ffffff;
+      color: var(--text-primary);
+      box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+    }
+
+    .scroll-arrows {
+      display: none;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .scroll-arrows.visible {
+      display: inline-flex;
+    }
+
+    .scroll-hint {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-right: 2px;
+    }
+
+    .scroll-arrow-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scroll-arrow-btn:hover:not(:disabled) {
+      background: #ffffff;
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .scroll-arrow-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .calendar-scroll {
+      overflow-x: auto;
+      overflow-y: visible;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      scrollbar-width: thin;
+      background: var(--grid-cell-bg);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: 64px repeat(var(--day-cols, 5), minmax(200px, 1fr));
+      min-width: calc(64px + var(--day-cols, 5) * 200px);
+    }
+
+    .cal-corner {
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      padding: 10px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    .cal-day-header {
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: var(--surface-muted);
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .cal-day-header:last-child {
+      border-right: none;
+    }
+
+    .cal-day-header.is-today {
+      background: #ffffff;
+      border-bottom-color: var(--accent-blue-border);
+      box-shadow: inset 0 2px 0 var(--accent-blue);
+    }
+
+    .cal-day-header.is-today .day-weekday,
+    .cal-day-header.is-today .day-date {
+      color: var(--accent-blue);
+    }
+
+    .cal-day-header.is-past {
+      background: #ebedf2;
+    }
+
+    .cal-day-header.is-past .day-weekday,
+    .cal-day-header.is-past .day-date {
+      color: var(--text-muted);
+    }
+
+    .day-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .day-weekday {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .day-date {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .day-header-badges {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .today-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--accent-blue);
+      color: #fff;
+    }
+
+    .past-badge {
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #dfe3eb;
+      color: var(--text-secondary);
+    }
+
+    .day-count-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: var(--radius-pill);
+      background: #ffffff;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+
+    .day-count-badge.has-items {
+      color: var(--accent-blue);
+      background: var(--accent-blue-soft);
+      border-color: var(--accent-blue-border);
+    }
+
+    .cal-time-cell {
+      position: sticky;
+      left: 0;
+      z-index: 4;
+      padding: 8px 8px 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-start;
+      border-bottom: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border);
+      background: var(--surface-muted);
+    }
+
+    .cal-time-label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-time-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 1px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .cal-slot-cell {
+      position: relative;
+      padding: 5px;
+      border-bottom: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-height: 104px;
+      background: var(--grid-cell-bg);
+    }
+
+    .cal-slot-cell.is-today {
+      background: var(--grid-cell-today);
+      border-right-color: #d6e0f5;
+    }
+
+    .cal-slot-cell.is-past {
+      background: var(--grid-cell-past);
+    }
+
+    .cal-slot-cell.row-empty {
+      min-height: 36px;
+      padding: 3px 5px;
+    }
+
+    .cal-time-cell.row-empty {
+      padding: 6px 8px;
+      justify-content: center;
+    }
+
+    .cal-time-cell.row-empty .cal-time-sub {
+      display: none;
+    }
+
+    .now-time-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-blue);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .now-time-badge {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--accent-blue);
+      color: #ffffff;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .banca-card {
+      width: 100%;
+      flex: 1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 7px 9px 8px 11px;
+      border-radius: 5px;
+      background: var(--card-bg, #dfe8fa);
+      border: 1px solid var(--card-border, #adc1e6);
+      border-left: 4px solid var(--card-accent, #2347c5);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background-color 0.12s ease, border-color 0.12s ease;
+    }
+
+    .banca-card:hover {
+      background: var(--card-bg-hover, #d3e0f8);
+      border-color: var(--card-accent, #2347c5);
+      border-left-color: var(--card-accent, #2347c5);
+    }
+
+    .banca-card.highlighted {
+      border-color: var(--card-accent, #2347c5);
+    }
+
+    .banca-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .banca-time {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--card-accent-dark, #1e4096);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .banca-badges {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .mini-badge {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+
+    .badge-closed {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+
+    .badge-confirm {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+    }
+
+    .badge-sala {
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--text-secondary);
+      border: 1px solid rgba(17, 24, 39, 0.12);
+    }
+
+    .banca-title {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text-primary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .banca-student {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .banca-profs {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      margin-top: 2px;
+    }
+
+    .prof-name-line {
+      font-size: 10.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      line-height: 1.25;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.65);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .prof-name-line.is-selected {
+      background: var(--card-accent, #2347c5);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .prof-name-line.needs-confirm::after {
+      content: " (confirmar)";
+      font-size: 9.5px;
+      opacity: 0.8;
+    }
+
+    .agenda-view {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .agenda-view.visible {
+      display: flex;
+    }
+
+    .calendar-scroll.hidden {
+      display: none;
+    }
+
+    .day-pills-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .day-pills-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .day-pill-btn {
+      font-family: inherit;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .day-pill-btn.is-past {
+      opacity: 0.72;
+    }
+
+    .day-pill-btn.is-today {
+      border-color: var(--accent-blue-border);
+      color: var(--accent-blue);
+    }
+
+    .day-pill-btn.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    .day-pill-count {
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: var(--radius-pill);
+      background: rgba(17, 24, 39, 0.08);
+      color: inherit;
+    }
+
+    .day-pill-btn.active .day-pill-count {
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .agenda-days-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .agenda-day-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .agenda-day-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 2px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .agenda-day-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .agenda-day-header.is-today .agenda-day-title {
+      color: var(--accent-blue);
+    }
+
+    .agenda-day-header.is-past .agenda-day-title {
+      color: var(--text-muted);
+    }
+
+    .agenda-cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .agenda-view .banca-title {
+      -webkit-line-clamp: unset;
+      overflow: visible;
+      font-size: 13.5px;
+    }
+
+    .agenda-view .banca-student {
+      white-space: normal;
+      font-size: 12.5px;
+    }
+
+    .agenda-view .banca-profs {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .agenda-view .prof-name-line {
+      font-size: 11.5px;
+      padding: 3px 7px;
+      white-space: normal;
+    }
+
+    .empty-week-banner {
+      padding: 24px 16px;
+      border-radius: 8px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .empty-week-banner p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(17, 24, 39, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 540px;
+      padding: 20px 22px;
+      border-radius: 12px;
+      background: #ffffff;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 45px -12px rgba(17, 24, 39, 0.28);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .modal-time-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--accent-blue-soft);
+      color: var(--accent-blue);
+      font-size: 12px;
+      font-weight: 700;
+      flex-wrap: wrap;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface-muted);
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .modal-close:hover {
+      background: #e5e7eb;
+      color: var(--text-primary);
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text-primary);
+    }
+
+    .modal-section {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 11px 13px;
+      border-radius: 8px;
+      background: var(--surface-muted);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .modal-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    .modal-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .modal-profs-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 2px;
+    }
+
+    .modal-prof-chip {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: #ffffff;
+      border: 1px solid var(--accent-blue-border);
+      color: var(--text-primary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .modal-prof-chip:hover {
+      background: var(--accent-blue);
+      color: #fff;
+      border-color: var(--accent-blue);
+    }
+
+    @media (max-width: 1024px) {
+      .top-bar {
+        grid-template-columns: 1fr;
+      }
+      .mini-cal-card {
+        display: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-shell {
+        padding: 10px 10px 28px;
+        gap: 10px;
+      }
+      .header-main,
+      .search-bar-panel,
+      .calendar-panel {
+        padding: 12px;
+      }
+      .brand-text h1 {
+        font-size: 17px;
+      }
+      .search-inputs-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .autocomplete-wrap {
+        flex: 1 1 auto;
+        width: 100%;
+        min-width: 0;
+      }
+      .search-input {
+        font-size: 16px;
+        padding: 10px 34px 10px 36px;
+      }
+      .calendar-nav-bar {
+        gap: 8px;
+      }
+      .scroll-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+${closedWarningBannerHtml}  <main class="app-shell">
+    <section class="top-bar">
+      <header class="panel header-main">
+        <div class="header-top-row">
+          <div class="brand">
+            <div class="brand-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="3"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+            </div>
+            <div class="brand-text">
+              <h1>Bancas TCC Design</h1>
+              <div class="brand-subtitle">
+                <span id="dateSpanText">${escapeHtml(dateSpanDefault)}</span>
+                <span class="status-chip" id="summaryChip">
+                  <span class="status-dot"></span>
+                  <span id="summaryText">${escapeHtml(summaryDefault)}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="header-today-pill" id="jumpTodayBtn" style="display: none;">
+            Ir para hoje
+          </button>
+        </div>
+      </header>
+
+      <aside class="panel mini-cal-card" aria-label="Mini calendário">
+        <div class="mini-cal-header">
+          <span id="miniCalMonthLabel"></span>
+          <span class="mini-cal-badge">Bancas</span>
+        </div>
+        <div class="mini-cal-grid" id="miniCalGrid"></div>
+      </aside>
+    </section>
+
+    <section class="panel search-bar-panel" aria-label="Busca de bancas">
+      <div class="search-inputs-group">
+        <div class="autocomplete-wrap" id="profAutocompleteWrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            class="search-input"
+            id="profSearchInput"
+            placeholder="Buscar professor..."
+            autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="profDropdown"
+          />
+          <button type="button" class="clear-inline-btn" id="clearProfSearchBtn" aria-label="Limpar busca de professor">×</button>
+          <div class="autocomplete-dropdown" id="profDropdown" role="listbox" aria-label="Sugestões de professores"></div>
+        </div>
+
+        <div class="autocomplete-wrap" id="studentAutocompleteWrap">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            type="text"
+            class="search-input"
+            id="studentSearchInput"
+            placeholder="Buscar estudante..."
+            autocomplete="off"
+            role="combobox"
+            aria-autocomplete="list"
+            aria-expanded="false"
+            aria-controls="studentDropdown"
+          />
+          <button type="button" class="clear-inline-btn" id="clearStudentSearchBtn" aria-label="Limpar busca de estudante">×</button>
+          <div class="autocomplete-dropdown" id="studentDropdown" role="listbox" aria-label="Sugestões de estudantes"></div>
+        </div>
+
+        <div id="activeFilterBanner" class="active-filter-banner" style="display: none;">
+          <span id="activeFilterName"></span>
+          <button type="button" class="clear-filter-btn" id="clearFilterBtn" title="Limpar filtro de professor" aria-label="Limpar filtro">×</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel calendar-panel" aria-label="Calendário de bancas">
+      <div class="calendar-nav-bar">
+        <div class="calendar-nav-left">
+          <div class="calendar-range-label" id="calendarRangeLabel"></div>
+          <button type="button" class="nav-pill-btn" id="togglePastDaysBtn" style="display: none;"></button>
+        </div>
+
+        <div class="calendar-nav-right">
+          <div class="view-switcher" role="group" aria-label="Modo de visualização">
+            <button type="button" class="view-switch-btn" id="viewGridBtn">Grade</button>
+            <button type="button" class="view-switch-btn" id="viewListBtn">Lista</button>
+          </div>
+          <div class="scroll-arrows" id="scrollArrows">
+            <span class="scroll-hint">Rolar</span>
+            <button type="button" class="scroll-arrow-btn" id="scrollLeftBtn" aria-label="Rolar para a esquerda" title="Rolar para a esquerda">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button type="button" class="scroll-arrow-btn" id="scrollRightBtn" aria-label="Rolar para a direita" title="Rolar para a direita">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-scroll" id="calendarScroll">
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </div>
+
+      <div class="agenda-view" id="agendaView">
+        <div class="day-pills-bar" id="dayPillsBar"></div>
+        <div class="agenda-days-list" id="agendaDaysList"></div>
+      </div>
+
+      <div class="empty-week-banner" id="emptyWeekBanner" style="display: none;">
+        <p id="emptyWeekMsg"></p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card" id="modalCard">
+      <div class="modal-header">
+        <div class="modal-time-pill" id="modalTimePill"></div>
+        <button type="button" class="modal-close" id="modalCloseBtn" aria-label="Fechar detalhes">×</button>
+      </div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <div class="modal-section">
+        <span class="modal-label">Estudante</span>
+        <span class="modal-value" id="modalStudent"></span>
+      </div>
+      <div class="modal-section" id="modalSalaSection" style="display: none;">
+        <span class="modal-label">Sala</span>
+        <span class="modal-value" id="modalSala"></span>
+      </div>
+      <div class="modal-section">
+        <span class="modal-label">Banca examinadora (clique para filtrar)</span>
+        <div class="modal-profs-list" id="modalProfsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SCHEDULE_DATA = ${serializedData};
+
+    const PALETTE = [
+      { accent: "#2347c5", accentDark: "#173399", bg: "#dfe8fa", bgHover: "#d1dff8", border: "#adc1e6" },
+      { accent: "#7c5832", accentDark: "#5a3d1f", bg: "#ede2d5", bgHover: "#e4d4c2", border: "#cbb8a3" },
+      { accent: "#4b5563", accentDark: "#374151", bg: "#e4e7ec", bgHover: "#d7dce4", border: "#b8c0cc" },
+      { accent: "#157f5c", accentDark: "#0e5e44", bg: "#d9eee6", bgHover: "#c8e6db", border: "#a3cbbd" },
+      { accent: "#6d44b8", accentDark: "#502e90", bg: "#ebe4f7", bgHover: "#ded2f2", border: "#c2b2e0" },
+      { accent: "#b8326a", accentDark: "#8a204c", bg: "#f5e1ea", bgHover: "#edd0de", border: "#d9b0c3" },
+      { accent: "#0e7490", accentDark: "#095469", bg: "#daf0f5", bgHover: "#c9e7ee", border: "#a2ced9" }
+    ];
+
+    const profColorMap = new Map();
+    (SCHEDULE_DATA.professors || []).forEach((p, idx) => {
+      profColorMap.set(p.name, PALETTE[idx % PALETTE.length]);
+    });
+
+    function getTodayIso() {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return \`\${y}-\${m}-\${d}\`;
+    }
+
+    function getScheduleTimelineContext(todayIso) {
+      const days = SCHEDULE_DATA.days || [];
+      if (!days.length) {
+        return { firstDate: "", lastDate: "", isOngoing: false, hasStarted: false, focusDate: "", pastCount: 0 };
+      }
+      const firstDate = days[0].date;
+      const lastDate = days[days.length - 1].date;
+      const isOngoing = todayIso >= firstDate && todayIso <= lastDate;
+      const hasStarted = todayIso >= firstDate;
+      let focusDate = firstDate;
+      if (isOngoing) {
+        const nextOrToday = days.find(d => d.date >= todayIso);
+        focusDate = nextOrToday ? nextOrToday.date : lastDate;
+      } else if (todayIso > lastDate) {
+        focusDate = firstDate;
+      }
+      const pastCount = isOngoing ? days.filter(d => d.date < focusDate).length : 0;
+      return { firstDate, lastDate, isOngoing, hasStarted, focusDate, pastCount };
+    }
+
+    const initialTodayIso = getTodayIso();
+    const initialCtx = getScheduleTimelineContext(initialTodayIso);
+
+    const state = {
+      selectedProfessor: null,
+      profQuery: "",
+      studentQuery: "",
+      viewMode: window.innerWidth <= 768 ? "list" : "grid",
+      userPickedView: false,
+      hidePastDays: initialCtx.isOngoing && initialCtx.pastCount > 0,
+      selectedMobileDay: initialCtx.isOngoing ? initialCtx.focusDate : "all",
+      didInitialScrollToToday: false,
+      activeDropdown: null,
+      dropdownHighlightIdx: -1
+    };
+
+    const calendarGrid = document.getElementById("calendarGrid");
+    const calendarScroll = document.getElementById("calendarScroll");
+    const calendarRangeLabel = document.getElementById("calendarRangeLabel");
+    const togglePastDaysBtn = document.getElementById("togglePastDaysBtn");
+    const jumpTodayBtn = document.getElementById("jumpTodayBtn");
+    const viewGridBtn = document.getElementById("viewGridBtn");
+    const viewListBtn = document.getElementById("viewListBtn");
+    const agendaView = document.getElementById("agendaView");
+    const dayPillsBar = document.getElementById("dayPillsBar");
+    const agendaDaysList = document.getElementById("agendaDaysList");
+    const scrollArrows = document.getElementById("scrollArrows");
+    const scrollLeftBtn = document.getElementById("scrollLeftBtn");
+    const scrollRightBtn = document.getElementById("scrollRightBtn");
+    const miniCalGrid = document.getElementById("miniCalGrid");
+    const miniCalMonthLabel = document.getElementById("miniCalMonthLabel");
+    const dateSpanText = document.getElementById("dateSpanText");
+    const summaryText = document.getElementById("summaryText");
+
+    const activeFilterBanner = document.getElementById("activeFilterBanner");
+    const activeFilterName = document.getElementById("activeFilterName");
+    const clearFilterBtn = document.getElementById("clearFilterBtn");
+
+    const profAutocompleteWrap = document.getElementById("profAutocompleteWrap");
+    const profSearchInput = document.getElementById("profSearchInput");
+    const clearProfSearchBtn = document.getElementById("clearProfSearchBtn");
+    const profDropdown = document.getElementById("profDropdown");
+
+    const studentAutocompleteWrap = document.getElementById("studentAutocompleteWrap");
+    const studentSearchInput = document.getElementById("studentSearchInput");
+    const clearStudentSearchBtn = document.getElementById("clearStudentSearchBtn");
+    const studentDropdown = document.getElementById("studentDropdown");
+
+    const emptyWeekBanner = document.getElementById("emptyWeekBanner");
+    const emptyWeekMsg = document.getElementById("emptyWeekMsg");
+
+    const modalBackdrop = document.getElementById("modalBackdrop");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const modalTimePill = document.getElementById("modalTimePill");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalStudent = document.getElementById("modalStudent");
+    const modalSalaSection = document.getElementById("modalSalaSection");
+    const modalSala = document.getElementById("modalSala");
+    const modalProfsList = document.getElementById("modalProfsList");
+
+    function normText(s) {
+      return String(s || "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function highlightMatchHtml(text, rawQuery) {
+      const str = String(text || "");
+      const q = normText(rawQuery.trim());
+      if (!q) return escapeHtml(str);
+      const normStr = normText(str);
+      const idx = normStr.indexOf(q);
+      if (idx === -1) return escapeHtml(str);
+      let rawStart = -1;
+      let rawEnd = -1;
+      let normPos = 0;
+      for (let i = 0; i < str.length; i++) {
+        const chNorm = normText(str[i]);
+        if (normPos === idx && rawStart === -1) rawStart = i;
+        normPos += chNorm.length;
+        if (normPos >= idx + q.length && rawEnd === -1) {
+          rawEnd = i + 1;
+          break;
+        }
+      }
+      if (rawStart === -1 || rawEnd === -1) return escapeHtml(str);
+      return (
+        escapeHtml(str.slice(0, rawStart)) +
+        "<mark>" + escapeHtml(str.slice(rawStart, rawEnd)) + "</mark>" +
+        escapeHtml(str.slice(rawEnd))
+      );
+    }
+
+    function hasActiveSearchFilter() {
+      return Boolean(state.selectedProfessor || state.profQuery.trim() || state.studentQuery.trim());
+    }
+
+    function getFilteredBancas() {
+      const sq = normText(state.studentQuery.trim());
+      const pq = normText(state.profQuery.trim());
+      return SCHEDULE_DATA.bancas.filter(b => {
+        if (state.selectedProfessor && !b.professors.some(p => p.name === state.selectedProfessor)) {
+          return false;
+        }
+        if (!state.selectedProfessor && pq && !b.professors.some(p => normText(p.name).includes(pq))) {
+          return false;
+        }
+        if (sq && !normText(b.student).includes(sq)) {
+          return false;
+        }
+        return true;
+      });
+    }
+
+    function getVisibleDays(ctx, filteredBancas) {
+      const allDays = SCHEDULE_DATA.days || [];
+      if (!allDays.length) return [];
+      const filtering = hasActiveSearchFilter();
+      if (filtering) {
+        if (!state.hidePastDays || !ctx.isOngoing) return allDays;
+        const matchedDates = new Set(filteredBancas.map(b => b.date));
+        return allDays.filter(d => d.date >= ctx.focusDate || matchedDates.has(d.date));
+      }
+      if (state.hidePastDays && ctx.isOngoing && ctx.pastCount > 0) {
+        return allDays.filter(d => d.date >= ctx.focusDate);
+      }
+      return allDays;
+    }
+
+    function getProfSuggestions(query) {
+      const q = normText(query.trim());
+      const profs = SCHEDULE_DATA.professors || [];
+      if (!q) return profs.slice(0, 20);
+      return profs
+        .filter(p => normText(p.name).includes(q))
+        .sort((a, b) => {
+          const aStarts = normText(a.name).startsWith(q) ? 0 : 1;
+          const bStarts = normText(b.name).startsWith(q) ? 0 : 1;
+          if (aStarts !== bStarts) return aStarts - bStarts;
+          return (b.count - a.count) || a.name.localeCompare(b.name, "pt-BR");
+        })
+        .slice(0, 15);
+    }
+
+    function getStudentSuggestions(query) {
+      const q = normText(query.trim());
+      const dayMap = new Map((SCHEDULE_DATA.days || []).map(d => [d.date, d]));
+      const list = (SCHEDULE_DATA.bancas || [])
+        .filter(b => b.student)
+        .filter(b => !q || normText(b.student).includes(q))
+        .sort((a, b) => {
+          if (q) {
+            const aStarts = normText(a.student).startsWith(q) ? 0 : 1;
+            const bStarts = normText(b.student).startsWith(q) ? 0 : 1;
+            if (aStarts !== bStarts) return aStarts - bStarts;
+          }
+          return a.student.localeCompare(b.student, "pt-BR");
+        })
+        .slice(0, 18);
+      return list.map(b => ({ banca: b, day: dayMap.get(b.date) }));
+    }
+
+    function closeDropdowns() {
+      state.activeDropdown = null;
+      state.dropdownHighlightIdx = -1;
+      profDropdown.classList.remove("open");
+      studentDropdown.classList.remove("open");
+      profSearchInput.setAttribute("aria-expanded", "false");
+      studentSearchInput.setAttribute("aria-expanded", "false");
+    }
+
+    function renderProfDropdown() {
+      const items = getProfSuggestions(profSearchInput.value);
+      state.activeDropdown = "prof";
+      state.dropdownHighlightIdx = -1;
+      profSearchInput.setAttribute("aria-expanded", "true");
+      studentDropdown.classList.remove("open");
+      studentSearchInput.setAttribute("aria-expanded", "false");
+
+      if (!items.length) {
+        profDropdown.innerHTML = '<div class="autocomplete-empty">Nenhum professor encontrado</div>';
+      } else {
+        profDropdown.innerHTML = items.map((p, idx) => {
+          const theme = profColorMap.get(p.name) || PALETTE[0];
+          return \`
+            <button type="button" class="autocomplete-item" role="option" data-prof="\${escapeHtml(p.name)}" data-idx="\${idx}">
+              <span class="autocomplete-item-main">
+                <span class="autocomplete-dot" style="background:\${theme.accent}"></span>
+                <span class="autocomplete-title">\${highlightMatchHtml(p.name, profSearchInput.value)}</span>
+              </span>
+              <span class="autocomplete-count">\${p.count} \${p.count === 1 ? "banca" : "bancas"}</span>
+            </button>
+          \`;
+        }).join("");
+      }
+
+      profDropdown.classList.add("open");
+      profDropdown.querySelectorAll(".autocomplete-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          applySelectedProfessor(btn.dataset.prof);
+          closeDropdowns();
+        });
+      });
+    }
+
+    function renderStudentDropdown() {
+      const items = getStudentSuggestions(studentSearchInput.value);
+      state.activeDropdown = "student";
+      state.dropdownHighlightIdx = -1;
+      studentSearchInput.setAttribute("aria-expanded", "true");
+      profDropdown.classList.remove("open");
+      profSearchInput.setAttribute("aria-expanded", "false");
+
+      if (!items.length) {
+        studentDropdown.innerHTML = '<div class="autocomplete-empty">Nenhum estudante encontrado</div>';
+      } else {
+        studentDropdown.innerHTML = items.map((entry, idx) => {
+          const b = entry.banca;
+          const dayLabel = entry.day ? entry.day.label : b.date;
+          return \`
+            <button type="button" class="autocomplete-item" role="option" data-student="\${escapeHtml(b.student)}" data-date="\${b.date}" data-idx="\${idx}">
+              <span class="autocomplete-item-col" style="min-width:0;flex:1;">
+                <span class="autocomplete-title">\${highlightMatchHtml(b.student, studentSearchInput.value)}</span>
+                <span class="autocomplete-sub">\${escapeHtml(dayLabel)} · \${b.startTime} · \${escapeHtml(b.title)}</span>
+              </span>
+            </button>
+          \`;
+        }).join("");
+      }
+
+      studentDropdown.classList.add("open");
+      studentDropdown.querySelectorAll(".autocomplete-item").forEach(btn => {
+        btn.addEventListener("click", () => {
+          applySelectedStudent(btn.dataset.student, btn.dataset.date);
+          closeDropdowns();
+        });
+      });
+    }
+
+    function handleDropdownKeydown(e, type) {
+      const dropdown = type === "prof" ? profDropdown : studentDropdown;
+      if (!dropdown.classList.contains("open")) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          if (type === "prof") renderProfDropdown();
+          else renderStudentDropdown();
+        }
+        return;
+      }
+      const items = Array.from(dropdown.querySelectorAll(".autocomplete-item"));
+      if (!items.length) return;
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        state.dropdownHighlightIdx = (state.dropdownHighlightIdx + 1) % items.length;
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        state.dropdownHighlightIdx = state.dropdownHighlightIdx <= 0 ? items.length - 1 : state.dropdownHighlightIdx - 1;
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        const target = items[state.dropdownHighlightIdx >= 0 ? state.dropdownHighlightIdx : 0];
+        if (target) target.click();
+        return;
+      } else if (e.key === "Escape" || e.key === "Tab") {
+        closeDropdowns();
+        return;
+      } else {
+        return;
+      }
+
+      items.forEach((el, i) => el.classList.toggle("is-active", i === state.dropdownHighlightIdx));
+      if (items[state.dropdownHighlightIdx]) {
+        items[state.dropdownHighlightIdx].scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    function applySelectedProfessor(profName) {
+      state.selectedProfessor = profName;
+      state.profQuery = "";
+      profSearchInput.value = profName;
+      clearProfSearchBtn.classList.add("visible");
+      if (state.viewMode === "list") {
+        state.selectedMobileDay = "all";
+      }
+      render();
+    }
+
+    function applySelectedStudent(studentName, dateStr) {
+      state.studentQuery = studentName;
+      studentSearchInput.value = studentName;
+      clearStudentSearchBtn.classList.add("visible");
+      if (state.viewMode === "list" && dateStr) {
+        state.selectedMobileDay = dateStr;
+      }
+      render();
+      if (dateStr && state.viewMode === "grid") {
+        scrollToDateColumn(dateStr);
+      }
+    }
+
+    function selectProfessor(profName) {
+      if (state.selectedProfessor === profName) {
+        state.selectedProfessor = null;
+        state.profQuery = "";
+        profSearchInput.value = "";
+        clearProfSearchBtn.classList.remove("visible");
+      } else {
+        applySelectedProfessor(profName);
+        return;
+      }
+      render();
+    }
+
+    function scrollToDateColumn(dateStr) {
+      const targetDay = calendarGrid.querySelector(\`.cal-day-header[data-date="\${dateStr}"]\`);
+      if (targetDay) {
+        targetDay.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+      }
+    }
+
+    function renderHeaderMeta(filteredBancas, todayIso, ctx) {
+      if (SCHEDULE_DATA.days.length) {
+        const first = SCHEDULE_DATA.days[0];
+        const last = SCHEDULE_DATA.days[SCHEDULE_DATA.days.length - 1];
+        dateSpanText.textContent = \`\${String(first.dayNum).padStart(2, "0")} \${first.monthLabel} – \${String(last.dayNum).padStart(2, "0")} \${last.monthLabel} \${last.year || 2026}\`;
+      }
+
+      const all = filteredBancas.length;
+      const terms = [];
+      if (state.selectedProfessor) terms.push(state.selectedProfessor);
+      else if (state.profQuery.trim()) terms.push(\`prof. "\${state.profQuery.trim()}"\`);
+      if (state.studentQuery.trim()) terms.push(\`estudante "\${state.studentQuery.trim()}"\`);
+
+      if (terms.length) {
+        summaryText.textContent = \`\${all} \${all === 1 ? "banca" : "bancas"} (\${terms.join(" · ")})\`;
+      } else {
+        summaryText.textContent = \`\${all} \${all === 1 ? "banca" : "bancas"} no total\`;
+      }
+
+      if (state.selectedProfessor) {
+        activeFilterBanner.style.display = "inline-flex";
+        activeFilterName.textContent = state.selectedProfessor;
+      } else {
+        activeFilterBanner.style.display = "none";
+      }
+
+      if (ctx.isOngoing) {
+        jumpTodayBtn.style.display = "inline-flex";
+        const focusDayObj = (SCHEDULE_DATA.days || []).find(d => d.date === ctx.focusDate);
+        const isExactToday = ctx.focusDate === todayIso;
+        jumpTodayBtn.textContent = isExactToday
+          ? "Ir para hoje"
+          : (focusDayObj ? \`Próximo dia (\${focusDayObj.weekdayShort} \${String(focusDayObj.dayNum).padStart(2, "0")})\` : "Hoje");
+      } else {
+        jumpTodayBtn.style.display = "none";
+      }
+    }
+
+    function renderMiniCalendar(filteredBancas, todayIso) {
+      if (!SCHEDULE_DATA.days.length) return;
+      const activeDates = new Set(filteredBancas.map(b => b.date));
+      const allBancaDates = new Set(SCHEDULE_DATA.bancas.map(b => b.date));
+
+      const firstParts = SCHEDULE_DATA.days[0].date.split("-").map(Number);
+      const lastParts = SCHEDULE_DATA.days[SCHEDULE_DATA.days.length - 1].date.split("-").map(Number);
+      const startDt = new Date(Date.UTC(firstParts[0], firstParts[1] - 1, firstParts[2]));
+      const startDow = (startDt.getUTCDay() + 6) % 7;
+      startDt.setUTCDate(startDt.getUTCDate() - startDow);
+
+      const endDt = new Date(Date.UTC(lastParts[0], lastParts[1] - 1, lastParts[2]));
+      const endDow = (endDt.getUTCDay() + 6) % 7;
+      endDt.setUTCDate(endDt.getUTCDate() + (6 - endDow));
+
+      const monthsSeen = Array.from(new Set(SCHEDULE_DATA.days.map(d => d.monthLabel)));
+      const yr = SCHEDULE_DATA.days[0].year || Number(SCHEDULE_DATA.days[0].date.slice(0, 4));
+      miniCalMonthLabel.textContent = \`\${monthsSeen.join(" / ")} \${yr}\`;
+
+      const headers = ["S", "T", "Q", "Q", "S", "S", "D"];
+      let html = headers.map(h => \`<div class="mini-wd">\${h}</div>\`).join("");
+
+      for (let cur = new Date(startDt); cur <= endDt; cur.setUTCDate(cur.getUTCDate() + 1)) {
+        const y = cur.getUTCFullYear();
+        const m = cur.getUTCMonth() + 1;
+        const d = cur.getUTCDate();
+        const iso = \`\${y}-\${String(m).padStart(2, "0")}-\${String(d).padStart(2, "0")}\`;
+
+        const hasAny = allBancaDates.has(iso);
+        const hasFiltered = activeDates.has(iso);
+        const dayObj = SCHEDULE_DATA.days.find(x => x.date === iso);
+
+        const classes = ["mini-day"];
+        if (hasAny) classes.push("has-banca");
+        if (iso === todayIso) classes.push("is-today");
+        if (hasAny && iso < todayIso) classes.push("is-past");
+        if (hasAny && !hasFiltered) classes.push("empty-for-filter");
+
+        html += \`<button type="button" class="\${classes.join(" ")}" data-date="\${iso}" title="\${dayObj ? dayObj.label : ""}">\${d}</button>\`;
+      }
+
+      miniCalGrid.innerHTML = html;
+      miniCalGrid.querySelectorAll("[data-date]").forEach(el => {
+        el.addEventListener("click", () => {
+          const dateStr = el.dataset.date;
+          if (!allBancaDates.has(dateStr)) return;
+          if (dateStr < todayIso && state.hidePastDays) {
+            state.hidePastDays = false;
+          }
+          if (state.viewMode === "list") {
+            state.selectedMobileDay = dateStr;
+            render();
+          } else {
+            render();
+            requestAnimationFrame(() => scrollToDateColumn(dateStr));
+          }
+        });
+      });
+    }
+
+    function updateScrollArrows() {
+      if (state.viewMode !== "grid") {
+        scrollArrows.classList.remove("visible");
+        return;
+      }
+      const canScroll = calendarScroll.scrollWidth > calendarScroll.clientWidth + 4;
+      scrollArrows.classList.toggle("visible", canScroll);
+      if (canScroll) {
+        scrollLeftBtn.disabled = calendarScroll.scrollLeft <= 4;
+        scrollRightBtn.disabled = calendarScroll.scrollLeft + calendarScroll.clientWidth >= calendarScroll.scrollWidth - 4;
+      }
+    }
+
+    function buildBancaCardHtml(banca, colorTheme) {
+      const cardVars = [
+        \`--card-bg: \${colorTheme.bg}\`,
+        \`--card-bg-hover: \${colorTheme.bgHover}\`,
+        \`--card-border: \${colorTheme.border}\`,
+        \`--card-accent: \${colorTheme.accent}\`,
+        \`--card-accent-dark: \${colorTheme.accentDark}\`
+      ].join("; ");
+
+      const hasConfirm = banca.professors.some(p => p.needsConfirm);
+      const profHtml = banca.professors.map(p => {
+        const isSel = state.selectedProfessor === p.name ? "is-selected" : "";
+        const confirmCls = p.needsConfirm ? "needs-confirm" : "";
+        return \`<div class="prof-name-line \${isSel} \${confirmCls}" title="\${escapeHtml(p.name)}">\${escapeHtml(p.name)}</div>\`;
+      }).join("");
+
+      return \`
+        <button type="button" class="banca-card \${state.selectedProfessor ? "highlighted" : ""}" data-banca-id="\${banca.id}" style="\${cardVars}">
+          <div>
+            <div class="banca-card-top">
+              <span class="banca-time">\${banca.startTime} – \${banca.endTime}</span>
+              <div class="banca-badges">
+                \${banca.sala ? \`<span class="mini-badge badge-sala">\${escapeHtml(banca.sala)}</span>\` : ""}
+                \${banca.isClosed ? '<span class="mini-badge badge-closed">Fechada</span>' : ""}
+                \${hasConfirm ? '<span class="mini-badge badge-confirm">Confirmar</span>' : ""}
+              </div>
+            </div>
+            <div class="banca-title" title="\${escapeHtml(banca.title)}">\${escapeHtml(banca.title)}</div>
+            \${banca.student ? \`<div class="banca-student" title="\${escapeHtml(banca.student)}">\${escapeHtml(banca.student)}</div>\` : ""}
+          </div>
+          <div class="banca-profs">
+            \${profHtml}
+          </div>
+        </button>
+      \`;
+    }
+
+    function attachCardModalListeners(container) {
+      container.querySelectorAll(".banca-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const banca = SCHEDULE_DATA.bancas.find(b => b.id === card.dataset.bancaId);
+          if (banca) openModal(banca);
+        });
+      });
+    }
+
+    function renderGridCalendar(visibleDays, filteredBancas, todayIso) {
+      calendarGrid.style.setProperty("--day-cols", Math.max(visibleDays.length, 1));
+
+      const slotMap = new Map();
+      const dayCounts = new Map();
+      visibleDays.forEach(d => dayCounts.set(d.date, 0));
+
+      for (const b of filteredBancas) {
+        if (dayCounts.has(b.date)) {
+          dayCounts.set(b.date, dayCounts.get(b.date) + 1);
+          const key = \`\${b.date}_\${b.hour}\`;
+          if (!slotMap.has(key)) slotMap.set(key, []);
+          slotMap.get(key).push(b);
+        }
+      }
+
+      const now = new Date();
+      const nowHour = now.getHours();
+      const nowMin = now.getMinutes();
+      const nowTimeText = \`\${String(nowHour).padStart(2, "0")}:\${String(nowMin).padStart(2, "0")}\`;
+      const nowPct = Math.round((nowMin / 60) * 1000) / 10;
+
+      let html = '<div class="cal-corner">Horário</div>';
+      for (const d of visibleDays) {
+        const cnt = dayCounts.get(d.date) || 0;
+        const isToday = d.date === todayIso;
+        const isPast = d.date < todayIso;
+        html += \`
+          <div class="cal-day-header \${isToday ? "is-today" : ""} \${isPast ? "is-past" : ""}" data-date="\${d.date}">
+            <div class="day-title-group">
+              <span class="day-weekday">\${escapeHtml(d.weekdayShort)}</span>
+              <span class="day-date">\${String(d.dayNum).padStart(2, "0")} \${escapeHtml(d.monthLabel)}</span>
+            </div>
+            <div class="day-header-badges">
+              \${isToday ? '<span class="today-badge">Hoje</span>' : (isPast ? '<span class="past-badge">Anterior</span>' : "")}
+              <span class="day-count-badge \${cnt > 0 ? "has-items" : ""}">\${cnt}</span>
+            </div>
+          </div>
+        \`;
+      }
+
+      for (const h of SCHEDULE_DATA.hours) {
+        const rowHasAny = visibleDays.some(d => slotMap.has(\`\${d.date}_\${h.hour}\`));
+        const emptyCls = rowHasAny ? "" : "row-empty";
+
+        html += \`
+          <div class="cal-time-cell \${emptyCls}">
+            <span class="cal-time-label">\${h.start}</span>
+            <span class="cal-time-sub">\${h.end}</span>
+          </div>
+        \`;
+
+        for (const d of visibleDays) {
+          const isToday = d.date === todayIso;
+          const isPast = d.date < todayIso;
+          const todayCls = isToday ? "is-today" : (isPast ? "is-past" : "");
+          const bancasInSlot = slotMap.get(\`\${d.date}_\${h.hour}\`) || [];
+          const showNowLine = isToday && h.hour === nowHour;
+          const nowLineHtml = showNowLine
+            ? \`<div class="now-time-line" style="top:\${nowPct}%"><span class="now-time-badge">\${nowTimeText}</span></div>\`
+            : "";
+
+          if (!bancasInSlot.length) {
+            html += \`<div class="cal-slot-cell \${emptyCls} \${todayCls}">\${nowLineHtml}</div>\`;
+          } else {
+            const cardsHtml = bancasInSlot.map(banca => {
+              const colorTheme = state.selectedProfessor
+                ? (profColorMap.get(state.selectedProfessor) || PALETTE[0])
+                : PALETTE[(h.hour + d.dayNum) % PALETTE.length];
+              return buildBancaCardHtml(banca, colorTheme);
+            }).join("");
+
+            html += \`<div class="cal-slot-cell \${todayCls}">\${nowLineHtml}\${cardsHtml}</div>\`;
+          }
+        }
+      }
+
+      calendarGrid.innerHTML = html;
+      attachCardModalListeners(calendarGrid);
+      requestAnimationFrame(updateScrollArrows);
+    }
+
+    function renderAgendaList(visibleDays, filteredBancas, todayIso) {
+      const dayCounts = new Map();
+      visibleDays.forEach(d => dayCounts.set(d.date, 0));
+      for (const b of filteredBancas) {
+        if (dayCounts.has(b.date)) {
+          dayCounts.set(b.date, dayCounts.get(b.date) + 1);
+        }
+      }
+
+      if (state.selectedMobileDay !== "all" && !visibleDays.some(d => d.date === state.selectedMobileDay)) {
+        state.selectedMobileDay = visibleDays.length ? visibleDays[0].date : "all";
+      }
+
+      const totalFiltered = visibleDays.reduce((acc, d) => acc + (dayCounts.get(d.date) || 0), 0);
+      let pillsHtml = \`
+        <button type="button" class="day-pill-btn \${state.selectedMobileDay === "all" ? "active" : ""}" data-mobile-day="all">
+          <span>Todos</span>
+          <span class="day-pill-count">\${totalFiltered}</span>
+        </button>
+      \`;
+
+      for (const d of visibleDays) {
+        const cnt = dayCounts.get(d.date) || 0;
+        const isToday = d.date === todayIso;
+        const isPast = d.date < todayIso;
+        const activeCls = state.selectedMobileDay === d.date ? "active" : "";
+        pillsHtml += \`
+          <button type="button" class="day-pill-btn \${activeCls} \${isToday ? "is-today" : ""} \${isPast ? "is-past" : ""}" data-mobile-day="\${d.date}">
+            <span>\${isToday ? "Hoje · " : ""}\${escapeHtml(d.weekdayShort)} \${String(d.dayNum).padStart(2, "0")}</span>
+            <span class="day-pill-count">\${cnt}</span>
+          </button>
+        \`;
+      }
+
+      dayPillsBar.innerHTML = pillsHtml;
+      dayPillsBar.querySelectorAll("[data-mobile-day]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.selectedMobileDay = btn.dataset.mobileDay;
+          render();
+        });
+      });
+
+      const daysToRender = state.selectedMobileDay === "all"
+        ? visibleDays.filter(d => (dayCounts.get(d.date) || 0) > 0)
+        : visibleDays.filter(d => d.date === state.selectedMobileDay);
+
+      let listHtml = "";
+      for (const d of daysToRender) {
+        const dayBancas = filteredBancas
+          .filter(b => b.date === d.date)
+          .sort((a, b) => a.hour - b.hour);
+
+        const isToday = d.date === todayIso;
+        const isPast = d.date < todayIso;
+        const cardsHtml = dayBancas.length
+          ? dayBancas.map(banca => {
+              const colorTheme = state.selectedProfessor
+                ? (profColorMap.get(state.selectedProfessor) || PALETTE[0])
+                : PALETTE[(banca.hour + d.dayNum) % PALETTE.length];
+              return buildBancaCardHtml(banca, colorTheme);
+            }).join("")
+          : '<div class="empty-week-banner"><p>Nenhuma banca neste dia para os filtros atuais.</p></div>';
+
+        listHtml += \`
+          <div class="agenda-day-group">
+            <div class="agenda-day-header \${isToday ? "is-today" : ""} \${isPast ? "is-past" : ""}">
+              <div class="agenda-day-title">
+                <span>\${escapeHtml(d.weekday)}, \${String(d.dayNum).padStart(2, "0")} \${escapeHtml(d.monthLabel)}</span>
+                \${isToday ? '<span class="today-badge">Hoje</span>' : (isPast ? '<span class="past-badge">Anterior</span>' : "")}
+              </div>
+              <span class="day-count-badge \${dayBancas.length > 0 ? "has-items" : ""}">\${dayBancas.length}</span>
+            </div>
+            <div class="agenda-cards-stack">
+              \${cardsHtml}
+            </div>
+          </div>
+        \`;
+      }
+
+      agendaDaysList.innerHTML = listHtml;
+      attachCardModalListeners(agendaDaysList);
+
+      const activePill = dayPillsBar.querySelector(".day-pill-btn.active");
+      if (activePill) {
+        activePill.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }
+
+    function renderCalendar(visibleDays, filteredBancas, todayIso, ctx) {
+      if (visibleDays.length) {
+        const f = visibleDays[0];
+        const l = visibleDays[visibleDays.length - 1];
+        const prefix = (state.hidePastDays && ctx.isOngoing && !hasActiveSearchFilter())
+          ? "A partir de hoje"
+          : \`Cronograma (\${visibleDays.length} \${visibleDays.length === 1 ? "dia" : "dias"})\`;
+        calendarRangeLabel.textContent = \`\${prefix} · \${String(f.dayNum).padStart(2, "0")} \${f.monthLabel} a \${String(l.dayNum).padStart(2, "0")} \${l.monthLabel}\`;
+      }
+
+      if (ctx.isOngoing && ctx.pastCount > 0) {
+        togglePastDaysBtn.style.display = "inline-flex";
+        togglePastDaysBtn.classList.toggle("is-active", !state.hidePastDays);
+        togglePastDaysBtn.textContent = state.hidePastDays
+          ? \`Mostrar \${ctx.pastCount} \${ctx.pastCount === 1 ? "dia anterior" : "dias anteriores"}\`
+          : "Ocultar dias anteriores";
+      } else {
+        togglePastDaysBtn.style.display = "none";
+      }
+
+      viewGridBtn.classList.toggle("active", state.viewMode === "grid");
+      viewListBtn.classList.toggle("active", state.viewMode === "list");
+
+      if (state.viewMode === "grid") {
+        calendarScroll.classList.remove("hidden");
+        agendaView.classList.remove("visible");
+        renderGridCalendar(visibleDays, filteredBancas, todayIso);
+      } else {
+        calendarScroll.classList.add("hidden");
+        agendaView.classList.add("visible");
+        renderAgendaList(visibleDays, filteredBancas, todayIso);
+        updateScrollArrows();
+      }
+
+      if (filteredBancas.length === 0) {
+        emptyWeekBanner.style.display = "flex";
+        const terms = [];
+        if (state.selectedProfessor) terms.push(state.selectedProfessor);
+        else if (state.profQuery.trim()) terms.push(\`prof. "\${state.profQuery.trim()}"\`);
+        if (state.studentQuery.trim()) terms.push(\`estudante "\${state.studentQuery.trim()}"\`);
+        emptyWeekMsg.textContent = terms.length
+          ? \`Nenhuma banca encontrada para \${terms.join(" e ")}.\`
+          : "Nenhuma banca cadastrada.";
+      } else {
+        emptyWeekBanner.style.display = "none";
+      }
+    }
+
+    function openModal(banca) {
+      const dayObj = SCHEDULE_DATA.days.find(d => d.date === banca.date);
+      modalTimePill.textContent = \`\${dayObj ? dayObj.weekday + ", " + String(dayObj.dayNum).padStart(2, "0") + " " + dayObj.monthLabel : banca.date} · \${banca.startTime} – \${banca.endTime}\${banca.isClosed ? " · Banca Fechada" : ""}\`;
+      modalTitle.textContent = banca.title;
+      modalStudent.textContent = banca.student || "Não informado";
+
+      if (banca.sala) {
+        modalSalaSection.style.display = "flex";
+        modalSala.textContent = banca.sala;
+      } else {
+        modalSalaSection.style.display = "none";
+      }
+
+      modalProfsList.innerHTML = banca.professors.map(p => {
+        const suffix = p.needsConfirm ? " (confirmar)" : "";
+        return \`<button type="button" class="modal-prof-chip" data-prof="\${escapeHtml(p.name)}">\${escapeHtml(p.name)}\${suffix}</button>\`;
+      }).join("");
+
+      modalProfsList.querySelectorAll(".modal-prof-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          closeModal();
+          selectProfessor(chip.dataset.prof);
+        });
+      });
+
+      modalBackdrop.classList.add("open");
+    }
+
+    function closeModal() {
+      modalBackdrop.classList.remove("open");
+    }
+
+    function render() {
+      const todayIso = getTodayIso();
+      const ctx = getScheduleTimelineContext(todayIso);
+      const filteredBancas = getFilteredBancas();
+      const visibleDays = getVisibleDays(ctx, filteredBancas);
+
+      renderHeaderMeta(filteredBancas, todayIso, ctx);
+      renderMiniCalendar(filteredBancas, todayIso);
+      renderCalendar(visibleDays, filteredBancas, todayIso, ctx);
+
+      if (!state.didInitialScrollToToday && ctx.isOngoing && state.viewMode === "grid") {
+        state.didInitialScrollToToday = true;
+        requestAnimationFrame(() => scrollToDateColumn(ctx.focusDate));
+      }
+    }
+
+    scrollLeftBtn.addEventListener("click", () => {
+      calendarScroll.scrollBy({ left: -420, behavior: "smooth" });
+    });
+
+    scrollRightBtn.addEventListener("click", () => {
+      calendarScroll.scrollBy({ left: 420, behavior: "smooth" });
+    });
+
+    calendarScroll.addEventListener("scroll", updateScrollArrows, { passive: true });
+    window.addEventListener("resize", () => {
+      if (!state.userPickedView) {
+        const preferred = window.innerWidth <= 768 ? "list" : "grid";
+        if (state.viewMode !== preferred) {
+          state.viewMode = preferred;
+          render();
+          return;
+        }
+      }
+      updateScrollArrows();
+    });
+
+    viewGridBtn.addEventListener("click", () => {
+      state.userPickedView = true;
+      state.viewMode = "grid";
+      render();
+    });
+
+    viewListBtn.addEventListener("click", () => {
+      state.userPickedView = true;
+      state.viewMode = "list";
+      render();
+    });
+
+    togglePastDaysBtn.addEventListener("click", () => {
+      state.hidePastDays = !state.hidePastDays;
+      render();
+    });
+
+    jumpTodayBtn.addEventListener("click", () => {
+      const ctx = getScheduleTimelineContext(getTodayIso());
+      if (!ctx.focusDate) return;
+      if (state.viewMode === "list") {
+        state.selectedMobileDay = ctx.focusDate;
+        render();
+      } else {
+        scrollToDateColumn(ctx.focusDate);
+      }
+    });
+
+    clearFilterBtn.addEventListener("click", () => {
+      state.selectedProfessor = null;
+      state.profQuery = "";
+      profSearchInput.value = "";
+      clearProfSearchBtn.classList.remove("visible");
+      render();
+    });
+
+    profSearchInput.addEventListener("focus", () => {
+      renderProfDropdown();
+    });
+
+    profSearchInput.addEventListener("input", e => {
+      state.profQuery = e.target.value;
+      if (state.selectedProfessor && state.profQuery !== state.selectedProfessor) {
+        state.selectedProfessor = null;
+      }
+      clearProfSearchBtn.classList.toggle("visible", Boolean(state.profQuery));
+      if (state.viewMode === "list" && state.profQuery.trim()) {
+        state.selectedMobileDay = "all";
+      }
+      render();
+      renderProfDropdown();
+    });
+
+    profSearchInput.addEventListener("keydown", e => handleDropdownKeydown(e, "prof"));
+
+    clearProfSearchBtn.addEventListener("click", () => {
+      state.selectedProfessor = null;
+      state.profQuery = "";
+      profSearchInput.value = "";
+      clearProfSearchBtn.classList.remove("visible");
+      render();
+      renderProfDropdown();
+      profSearchInput.focus();
+    });
+
+    studentSearchInput.addEventListener("focus", () => {
+      renderStudentDropdown();
+    });
+
+    studentSearchInput.addEventListener("input", e => {
+      state.studentQuery = e.target.value;
+      clearStudentSearchBtn.classList.toggle("visible", Boolean(state.studentQuery));
+      if (state.viewMode === "list" && state.studentQuery.trim()) {
+        state.selectedMobileDay = "all";
+      }
+      render();
+      renderStudentDropdown();
+    });
+
+    studentSearchInput.addEventListener("keydown", e => handleDropdownKeydown(e, "student"));
+
+    clearStudentSearchBtn.addEventListener("click", () => {
+      state.studentQuery = "";
+      studentSearchInput.value = "";
+      clearStudentSearchBtn.classList.remove("visible");
+      render();
+      renderStudentDropdown();
+      studentSearchInput.focus();
+    });
+
+    document.addEventListener("click", e => {
+      if (!profAutocompleteWrap.contains(e.target) && !studentAutocompleteWrap.contains(e.target)) {
+        closeDropdowns();
+      }
+    });
+
+    modalCloseBtn.addEventListener("click", closeModal);
+    modalBackdrop.addEventListener("click", e => {
+      if (e.target === modalBackdrop) closeModal();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        closeModal();
+        closeDropdowns();
+      }
+    });
+
+    setInterval(() => {
+      if (state.viewMode === "grid") {
+        const ctx = getScheduleTimelineContext(getTodayIso());
+        if (ctx.isOngoing) render();
+      }
+    }, 60000);
+
+    render();
+  <` + `/script>
+</body>
+</html>
+`;
+    }
+
+    // ---------------- Generator UI ----------------
+    function updateOptionPreview() {
+      if (!parsedRawSchedule) return;
+      const omitClosed = omitClosedCheckbox.checked;
+      const closedCount = parsedRawSchedule.bancas.filter(b => b.isClosed).length;
+      const publicCount = parsedRawSchedule.bancas.length - closedCount;
+
+      if (omitClosed) {
+        targetFileBadge.textContent = "index.html";
+        targetFileBadge.className = "target-file-badge public";
+        omitClosedDesc.textContent = closedCount > 0
+          ? `Remove ${closedCount} ${closedCount === 1 ? "banca fechada" : "bancas fechadas"} e gera a versão pública com ${publicCount} bancas, sem aviso de restrição.`
+          : `Gera a versão pública index.html com ${publicCount} bancas (nenhuma banca fechada na planilha).`;
+        warningPreviewBox.classList.remove("visible");
+        generateBtn.textContent = "Gerar e baixar index.html";
+        generateBtn.classList.remove("is-danger-btn");
+      } else {
+        targetFileBadge.textContent = "fechadas.html";
+        targetFileBadge.className = "target-file-badge closed";
+        omitClosedDesc.textContent = `Inclui todas as ${parsedRawSchedule.bancas.length} bancas (${closedCount} fechadas) e adiciona um aviso destacado no topo: "Não divulgar! Aqui contém as bancas fechadas".`;
+        warningPreviewBox.classList.add("visible");
+        generateBtn.textContent = "Gerar e baixar fechadas.html";
+        generateBtn.classList.add("is-danger-btn");
+      }
+    }
+
+    function renderParsedSummary(parsed) {
+      parsedRawSchedule = parsed;
+      const closedList = parsed.bancas.filter(b => b.isClosed);
+      const publicCount = parsed.bancas.length - closedList.length;
+      const first = parsed.days[0];
+      const last = parsed.days[parsed.days.length - 1];
+
+      fileNameLabel.textContent = parsed.sourceName;
+      fileSpanLabel.textContent = `${String(first.dayNum).padStart(2, "0")} ${first.monthLabel} – ${String(last.dayNum).padStart(2, "0")} ${last.monthLabel} ${last.year} · ${parsed.days.length} dias`;
+
+      statTotal.textContent = parsed.bancas.length;
+      statPublic.textContent = publicCount;
+      statClosed.textContent = closedList.length;
+      statClosedCard.classList.toggle("has-closed", closedList.length > 0);
+      statProfs.textContent = parsed.professors.length;
+
+      if (closedList.length > 0) {
+        const dayMap = new Map(parsed.days.map(d => [d.date, d.label]));
+        closedPreview.style.display = "flex";
+        closedPreviewList.innerHTML = closedList.map(b => {
+          const dayLbl = dayMap.get(b.date) || b.date;
+          return `<li><strong>${escapeHtml(dayLbl)} · ${b.startTime}</strong> — ${escapeHtml(b.student || "Sem estudante")} (${escapeHtml(b.title)})</li>`;
+        }).join("");
+      } else {
+        closedPreview.style.display = "none";
+        closedPreviewList.innerHTML = "";
+      }
+
+      omitClosedCheckbox.checked = true;
+      updateOptionPreview();
+      resultsPanel.classList.add("visible");
+    }
+
+    function downloadHtmlFile(filename, htmlContent) {
+      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    async function handleFile(file) {
+      errorBanner.classList.remove("visible");
+      if (!file) return;
+      if (!file.name.toLowerCase().endsWith(".xlsx")) {
+        errorBanner.textContent = "Por favor, selecione um arquivo .xlsx válido.";
+        errorBanner.classList.add("visible");
+        return;
+      }
+      try {
+        const buf = await file.arrayBuffer();
+        const parsed = await parseXlsxBuffer(buf, file.name);
+        renderParsedSummary(parsed);
+        showToast(`Planilha carregada: ${parsed.bancas.length} bancas encontradas.`);
+      } catch (err) {
+        console.error(err);
+        errorBanner.textContent = err.message || "Erro ao processar a planilha.";
+        errorBanner.classList.add("visible");
+      }
+    }
+
+    dropzone.addEventListener("click", () => xlsxFileInput.click());
+    dropzone.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        xlsxFileInput.click();
+      }
+    });
+    pickAnotherBtn.addEventListener("click", () => xlsxFileInput.click());
+
+    xlsxFileInput.addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (file) handleFile(file);
+      e.target.value = "";
+    });
+
+    dropzone.addEventListener("dragover", e => {
+      e.preventDefault();
+      dropzone.classList.add("drag-over");
+    });
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("drag-over");
+    });
+    dropzone.addEventListener("drop", e => {
+      e.preventDefault();
+      dropzone.classList.remove("drag-over");
+      const file = e.dataTransfer?.files?.[0];
+      if (file) handleFile(file);
+    });
+
+    omitClosedCheckbox.addEventListener("change", updateOptionPreview);
+
+    generateBtn.addEventListener("click", () => {
+      if (!parsedRawSchedule) return;
+      const omitClosed = omitClosedCheckbox.checked;
+      const filename = omitClosed ? "index.html" : "fechadas.html";
+      const html = generateCalendarHtml(parsedRawSchedule, { isClosedVersion: !omitClosed });
+      downloadHtmlFile(filename, html);
+      showToast(`Arquivo ${filename} gerado e baixado!`);
+    });
+
+    generateBothBtn.addEventListener("click", () => {
+      if (!parsedRawSchedule) return;
+      const publicHtml = generateCalendarHtml(parsedRawSchedule, { isClosedVersion: false });
+      const closedHtml = generateCalendarHtml(parsedRawSchedule, { isClosedVersion: true });
+      downloadHtmlFile("index.html", publicHtml);
+      setTimeout(() => {
+        downloadHtmlFile("fechadas.html", closedHtml);
+        showToast("Arquivos index.html e fechadas.html gerados!");
+      }, 280);
+    });
+  </script>
+</body>
+</html>
